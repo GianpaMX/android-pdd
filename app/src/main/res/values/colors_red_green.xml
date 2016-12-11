@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="red_primary">#F44336</color>
+    <color name="red_primary_dark">#D32F2F</color>
+    <color name="pink_primary_light">#FFCDD2</color>
+    <color name="green_accent">#4CAF50</color>
+    <color name="black_primary_text">#212121</color>
+    <color name="gray_secondary_text">#757575</color>
+    <color name="white_icons">#FFFFFF</color>
+    <color name="gray_divider">#BDBDBD</color>
+</resources>

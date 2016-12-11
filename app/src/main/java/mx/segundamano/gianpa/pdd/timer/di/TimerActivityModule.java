@@ -21,10 +21,4 @@ public class TimerActivityModule {
     public TimerPresenter provideTimerPresenter(TimerUseCase useCase) {
         return new TimerPresenter(useCase);
     }
-
-    @Provides
-    @ActivityScope
-    public TimerUseCase provideTimerUseCase(AlarmGateway alarmGateway) {
-        return new TimerUseCase(alarmGateway);
-    }
 }

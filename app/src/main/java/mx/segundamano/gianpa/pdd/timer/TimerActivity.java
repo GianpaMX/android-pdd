@@ -24,9 +24,24 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         inject(this);
+    }
 
-        TimerFragment timerFragment = getTimerFragment(savedInstanceState);
-        presenter.setView(timerFragment);
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        getAndroidApp().setCurrentActivity(this);
+
+        presenter.setView(getTimerFragment());
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        getAndroidApp().setCurrentActivity(null);
+
+        presenter.setView(null);
     }
 
     private void inject(TimerActivity timerActivity) {
@@ -34,17 +49,21 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     private TimerComponent getTimerComponent(TimerActivity timerActivity) {
-        return ((AndroidApp) timerActivity.getApplication()).getAndroidAppComponent().timerComponent(new TimerActivityModule(timerActivity));
+        return getAndroidApp().getAndroidAppComponent().timerComponent(new TimerActivityModule(timerActivity));
     }
 
-    private TimerFragment getTimerFragment(Bundle savedInstanceState) {
-        TimerFragment timerFragment;
-        if (savedInstanceState == null) {
+    private AndroidApp getAndroidApp() {
+        return (AndroidApp) getApplication();
+    }
+
+    private TimerFragment getTimerFragment() {
+        TimerFragment timerFragment = timerFragment = (TimerFragment) getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
+
+        if (timerFragment == null) {
             timerFragment = new TimerFragment();
             getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, timerFragment).commit();
-        } else {
-            timerFragment = (TimerFragment) getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
         }
+
         return timerFragment;
     }
 

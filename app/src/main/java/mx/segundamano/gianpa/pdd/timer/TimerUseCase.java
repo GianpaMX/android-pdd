@@ -57,6 +57,10 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         alarmGateway.stop();
     }
 
+    public void timeUp() {
+        alarmGateway.timeUp();
+    }
+
     public interface Callback {
         void onTimeUp();
 

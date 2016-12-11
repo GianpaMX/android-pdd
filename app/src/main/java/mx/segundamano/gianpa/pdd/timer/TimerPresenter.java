@@ -19,13 +19,15 @@ public class TimerPresenter implements TimerUseCase.Callback {
 
     public void onStartButtonClick() {
         useCase.start(this);
-        view.showStopButton();
+        if (view != null) view.showStopButton();
     }
 
     @Override
     public void onTimeUp() {
-        view.ringAlarm();
-        view.showStartButton();
+        if (view != null) {
+            view.ringAlarm();
+            view.showStartButton();
+        }
     }
 
     @Override
@@ -34,12 +36,12 @@ public class TimerPresenter implements TimerUseCase.Callback {
         DateFormat formatter = new SimpleDateFormat("mm:ss");
         String remainingTime = formatter.format(date);
 
-        view.onTick(remainingTime);
+        if (view != null) view.onTick(remainingTime);
     }
 
     @Override
     public void unableToResume() {
-        view.showStartButton();
+        if (view != null) view.showStartButton();
     }
 
     public TimerView getView() {
@@ -51,7 +53,7 @@ public class TimerPresenter implements TimerUseCase.Callback {
     }
 
     public void resume() {
-        view.showStopButton();
+        if (view != null) view.showStopButton();
         useCase.resume(this);
     }
 

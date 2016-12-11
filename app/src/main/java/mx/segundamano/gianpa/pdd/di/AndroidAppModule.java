@@ -8,6 +8,7 @@ import dagger.Module;
 import dagger.Provides;
 import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.timer.AlarmGateway;
+import mx.segundamano.gianpa.pdd.timer.TimerUseCase;
 import mx.segundamano.gianpa.pdd.timer.alarmgateway.AlarmGatewayImpl;
 
 @Module
@@ -28,5 +29,11 @@ public class AndroidAppModule {
     @Provides
     public AlarmGateway provideAlarmGateway() {
         return new AlarmGatewayImpl(androidApp);
+    }
+    
+    @Singleton
+    @Provides
+    public TimerUseCase provideTimerUseCase(AlarmGateway alarmGateway) {
+        return new TimerUseCase(alarmGateway);
     }
 }

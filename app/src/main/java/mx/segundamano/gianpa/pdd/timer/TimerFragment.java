@@ -70,7 +70,7 @@ public class TimerFragment extends Fragment implements TimerView {
 
     @Override
     public void ringAlarm() {
-        Snackbar.make(getView(), "Timeup", Snackbar.LENGTH_LONG).show();
+        Snackbar.make(getView(), "Time Up", Snackbar.LENGTH_LONG).show();
     }
 
     public interface TimerFragmentContainer {

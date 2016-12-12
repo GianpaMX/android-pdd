@@ -23,7 +23,7 @@
             </intent-filter>
         </activity>
         <receiver
-            android:name=".timer.alarmgateway.AlarmReceiver"
+            android:name=".wakeup.AlarmReceiver"
             android:enabled="true"
             android:exported="true" />
     </application>

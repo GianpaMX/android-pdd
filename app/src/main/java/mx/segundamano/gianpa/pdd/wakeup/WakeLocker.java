@@ -1,4 +1,4 @@
-package mx.segundamano.gianpa.pdd.timer.alarmgateway;
+package mx.segundamano.gianpa.pdd.wakeup;
 
 import android.content.Context;
 import android.os.PowerManager;

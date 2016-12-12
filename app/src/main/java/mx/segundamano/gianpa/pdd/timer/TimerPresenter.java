@@ -44,10 +44,6 @@ public class TimerPresenter implements TimerUseCase.Callback {
         if (view != null) view.showStartButton();
     }
 
-    public TimerView getView() {
-        return view;
-    }
-
     public void setView(TimerView view) {
         this.view = view;
     }

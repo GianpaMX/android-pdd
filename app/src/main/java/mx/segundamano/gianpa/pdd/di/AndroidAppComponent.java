@@ -3,7 +3,7 @@ package mx.segundamano.gianpa.pdd.di;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import mx.segundamano.gianpa.pdd.timer.alarmgateway.AlarmReceiver;
+import mx.segundamano.gianpa.pdd.wakeup.AlarmReceiver;
 import mx.segundamano.gianpa.pdd.timer.di.TimerActivityModule;
 import mx.segundamano.gianpa.pdd.timer.di.TimerComponent;
 

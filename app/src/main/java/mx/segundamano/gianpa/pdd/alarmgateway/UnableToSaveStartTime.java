@@ -1,4 +1,4 @@
-package mx.segundamano.gianpa.pdd.timer.alarmgateway;
+package mx.segundamano.gianpa.pdd.alarmgateway;
 
 public class UnableToSaveStartTime extends Throwable {
 }

@@ -1,4 +1,4 @@
-package mx.segundamano.gianpa.pdd.timer.alarmgateway;
+package mx.segundamano.gianpa.pdd.alarmgateway;
 
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -12,15 +12,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
 
-import mx.segundamano.gianpa.pdd.timer.AlarmGateway;
+import mx.segundamano.gianpa.pdd.wakeup.AlarmReceiver;
 
 public class AlarmGatewayImpl implements AlarmGateway {
     public static final int ONE_SECOND = 1000;
 
     private Context context;
-    private TickListener listener;
+    private Listeners listeners;
     private Handler handler;
     private long startTimeInMillis;
     private File file;
@@ -29,6 +30,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     public AlarmGatewayImpl(Context context) {
         this.context = context;
         file = getFile();
+        listeners = new Listeners();
     }
 
     @Override
@@ -62,7 +64,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     @Override
     public void resume() {
         if (!file.exists()) {
-            if (listener != null) listener.onError(new UnableToResume());
+            listeners.onError(new UnableToResume());
             return;
         }
 
@@ -73,9 +75,9 @@ public class AlarmGatewayImpl implements AlarmGateway {
                 inputStream.read(bytes);
                 startTimeInMillis = ByteUtils.bytesToLong(bytes);
             } catch (FileNotFoundException e) {
-                if (listener != null) listener.onError(new UnableToResume());
+                listeners.onError(new UnableToResume());
             } catch (IOException e) {
-                if (listener != null) listener.onError(new UnableToResume());
+                listeners.onError(new UnableToResume());
             }
         }
 
@@ -86,7 +88,10 @@ public class AlarmGatewayImpl implements AlarmGateway {
 
     @Override
     public void stop() {
-        if (handler != null) handler.removeCallbacks(ticker);
+        if (handler != null) {
+            handler.removeCallbacks(ticker);
+            handler = null;
+        }
 
         if (file.exists()) file.delete();
     }
@@ -95,9 +100,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     public void timeUp() {
         stop();
 
-        if (listener != null) {
-            listener.onTimeUp();
-        }
+        listeners.onTimeUp();
     }
 
     @NonNull
@@ -109,13 +112,18 @@ public class AlarmGatewayImpl implements AlarmGateway {
         @Override
         public void run() {
             handler.postDelayed(this, ONE_SECOND);
-            if (listener != null) listener.onTick();
+            listeners.onTick();
         }
     };
 
     @Override
-    public void setTickListener(TickListener listener) {
-        this.listener = listener;
+    public void addTickListener(@NonNull TickListener listener) {
+        listeners.add(listener);
+    }
+
+    @Override
+    public void addTimeUpListener(@NonNull TimeUpListener listener) {
+        listeners.add(listener);
     }
 
     @Override
@@ -131,7 +139,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
 
             outputStream.close();
         } catch (IOException e) {
-            if (listener != null) listener.onError(new UnableToSaveStartTime());
+            listeners.onError(new UnableToSaveStartTime());
         }
     }
 
@@ -152,6 +160,30 @@ public class AlarmGatewayImpl implements AlarmGateway {
                 result |= (b[i] & 0xFF);
             }
             return result;
+        }
+    }
+
+    private static class Listeners extends ArrayList<TimeUpListener> implements TickListener {
+
+        @Override
+        public void onTick() {
+            for (TimeUpListener listener : this) {
+                if (listener instanceof TickListener) ((TickListener) listener).onTick();
+            }
+        }
+
+        @Override
+        public void onTimeUp() {
+            for (TimeUpListener listener : this) {
+                listener.onTimeUp();
+            }
+        }
+
+        @Override
+        public void onError(Throwable error) {
+            for (TimeUpListener listener : this) {
+                if (listener instanceof TickListener) ((TickListener) listener).onError(error);
+            }
         }
     }
 }

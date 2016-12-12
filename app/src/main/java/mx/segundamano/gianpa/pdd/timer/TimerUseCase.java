@@ -2,7 +2,9 @@ package mx.segundamano.gianpa.pdd.timer;
 
 import java.util.Calendar;
 
-import mx.segundamano.gianpa.pdd.timer.alarmgateway.UnableToResume;
+import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
+import mx.segundamano.gianpa.pdd.alarmgateway.UnableToResume;
+import mx.segundamano.gianpa.pdd.wakeup.WakeupUseCase;
 
 public class TimerUseCase implements AlarmGateway.TickListener {
     private long pomodoroLenght = TimeConstants.DEFAULT_POMODORO_TIME;
@@ -19,7 +21,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         this.callback = callback;
         startTimeInMillis = getCurrentTimeInMillis();
 
-        alarmGateway.setTickListener(this);
+        alarmGateway.addTickListener(this);
         alarmGateway.start(startTimeInMillis);
     }
 
@@ -48,7 +50,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
     public void resume(Callback callback) {
         this.callback = callback;
 
-        alarmGateway.setTickListener(this);
+        alarmGateway.addTickListener(this);
         alarmGateway.resume();
         startTimeInMillis = alarmGateway.getStartTimeInMillis();
     }
@@ -57,13 +59,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         alarmGateway.stop();
     }
 
-    public void timeUp() {
-        alarmGateway.timeUp();
-    }
-
-    public interface Callback {
-        void onTimeUp();
-
+    public interface Callback extends WakeupUseCase.Callback {
         void onTick(long remainingTimeInMillis);
 
         void unableToResume();

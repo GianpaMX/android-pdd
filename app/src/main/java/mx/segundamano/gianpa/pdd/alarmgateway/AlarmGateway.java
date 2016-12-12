@@ -15,6 +15,10 @@ public interface AlarmGateway {
 
     void timeUp();
 
+    boolean isActive();
+
+    long getTimeUpInMillis();
+
     interface TickListener extends TimeUpListener {
         void onTick();
 

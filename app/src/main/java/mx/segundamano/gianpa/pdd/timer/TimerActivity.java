@@ -77,8 +77,6 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
 
     @Override
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            presenter.resume();
-        }
+        presenter.resume();
     }
 }

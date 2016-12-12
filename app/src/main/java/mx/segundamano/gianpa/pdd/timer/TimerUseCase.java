@@ -42,21 +42,28 @@ public class TimerUseCase implements AlarmGateway.TickListener {
 
     @Override
     public void onError(Throwable error) {
-        if(error instanceof UnableToResume) {
+        if (error instanceof UnableToResume) {
             callback.unableToResume();
+            callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
         }
     }
 
     public void resume(Callback callback) {
         this.callback = callback;
 
-        alarmGateway.addTickListener(this);
-        alarmGateway.resume();
-        startTimeInMillis = alarmGateway.getStartTimeInMillis();
+        if (alarmGateway.isActive()) {
+            alarmGateway.addTickListener(this);
+            alarmGateway.resume();
+            startTimeInMillis = alarmGateway.getStartTimeInMillis();
+        } else {
+            callback.unableToResume();
+            callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+        }
     }
 
     public void stop() {
         alarmGateway.stop();
+        callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
     }
 
     public interface Callback extends WakeupUseCase.Callback {

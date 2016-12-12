@@ -14,11 +14,15 @@ import javax.inject.Inject;
 import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.R;
 import mx.segundamano.gianpa.pdd.di.AndroidAppComponent;
+import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
 import mx.segundamano.gianpa.pdd.timer.TimerActivity;
 
 public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Callback {
     @Inject
     public WakeupUseCase wakeupUseCase;
+
+    @Inject
+    public NotifyUseCase notifyUseCase;
 
     private Context context;
 
@@ -46,26 +50,7 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
 
     @Override
     public void onTimeUp() {
-        if (getAndroidApp().getCurrentActivity() == null) {
-            NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-            Intent resultIntent = new Intent(context, TimerActivity.class);
-
-            TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-            stackBuilder.addParentStack(TimerActivity.class);
-            stackBuilder.addNextIntent(resultIntent);
-
-            PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-            Notification notification = new NotificationCompat.Builder(context)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("My notification")
-                    .setContentText("Hello World!")
-                    .setContentIntent(resultPendingIntent).build();
-
-            notificationManager.notify(0, notification);
-        }
-
+        notifyUseCase.timeUp();
         WakeLocker.release();
     }
 }

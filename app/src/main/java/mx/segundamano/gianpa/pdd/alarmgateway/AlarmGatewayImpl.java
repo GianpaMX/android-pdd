@@ -15,10 +15,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import mx.segundamano.gianpa.pdd.timer.TimeConstants;
 import mx.segundamano.gianpa.pdd.wakeup.AlarmReceiver;
 
 public class AlarmGatewayImpl implements AlarmGateway {
-    public static final int ONE_SECOND = 1000;
+    public static final int ONE_SECOND = (int) TimeConstants.SECONDS;
 
     private Context context;
     private Listeners listeners;
@@ -27,8 +28,10 @@ public class AlarmGatewayImpl implements AlarmGateway {
     private File file;
     private AlarmManager alarmManager;
 
-    public AlarmGatewayImpl(Context context) {
+    public AlarmGatewayImpl(Context context, AlarmManager alarmManager) {
         this.context = context;
+        this.alarmManager = alarmManager;
+
         file = getFile();
         listeners = new Listeners();
     }
@@ -48,12 +51,17 @@ public class AlarmGatewayImpl implements AlarmGateway {
         Intent intent = new Intent(context, AlarmReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(System.currentTimeMillis());
-        calendar.add(Calendar.SECOND, 15);
+        long timeUpInMillis = getTimeUpInMillis();
 
-        alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeUpInMillis, pendingIntent);
+    }
+
+    @Override
+    public long getTimeUpInMillis() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(startTimeInMillis);
+        calendar.add(Calendar.MILLISECOND, (int) TimeConstants.DEFAULT_POMODORO_TIME);
+        return calendar.getTimeInMillis();
     }
 
     private void startTicker() {
@@ -63,7 +71,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
 
     @Override
     public void resume() {
-        if (!file.exists()) {
+        if (!isActive()) {
             listeners.onError(new UnableToResume());
             return;
         }
@@ -84,6 +92,10 @@ public class AlarmGatewayImpl implements AlarmGateway {
         if (handler == null) {
             startTicker();
         }
+    }
+
+    public boolean isActive() {
+        return handler != null || file.exists();
     }
 
     @Override

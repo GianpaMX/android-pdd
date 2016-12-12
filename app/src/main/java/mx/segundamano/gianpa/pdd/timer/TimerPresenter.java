@@ -4,21 +4,18 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
+
 public class TimerPresenter implements TimerUseCase.Callback {
-    private TimerUseCase useCase;
+    private TimerUseCase timerUseCase;
     private TimerView view;
 
-    public TimerPresenter(TimerUseCase useCase) {
-        this(useCase, null);
-    }
-
-    public TimerPresenter(TimerUseCase useCase, TimerView view) {
-        this.useCase = useCase;
-        this.view = view;
+    public TimerPresenter(TimerUseCase timerUseCase) {
+        this.timerUseCase = timerUseCase;
     }
 
     public void onStartButtonClick() {
-        useCase.start(this);
+        timerUseCase.start(this);
         if (view != null) view.showStopButton();
     }
 
@@ -50,10 +47,11 @@ public class TimerPresenter implements TimerUseCase.Callback {
 
     public void resume() {
         if (view != null) view.showStopButton();
-        useCase.resume(this);
+        timerUseCase.resume(this);
     }
 
     public void onStopButtonClick() {
-        useCase.stop();
+        timerUseCase.stop();
+        if (view != null) view.showStartButton();
     }
 }

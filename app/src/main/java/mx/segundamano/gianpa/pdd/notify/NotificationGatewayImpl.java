@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -25,19 +26,32 @@ public class NotificationGatewayImpl implements NotificationGateway {
     public void showOnGoingNotification(long when) {
         PendingIntent resultPendingIntent = getPendingIntent();
 
-        notification = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Active Pomodor")
-                .setContentText("Time until break")
-                .setContentIntent(resultPendingIntent)
-                .setOngoing(true)
-                .setTicker("Time until break")
-                .setWhen(when)
-                .setUsesChronometer(true)
-                .build();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            notification = new Notification.Builder(context)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Active Pomodor")
+                    .setContentText("Time until break")
+                    .setContentIntent(resultPendingIntent)
+                    .setOngoing(true)
+                    .setTicker("Time until break")
+                    .setWhen(when)
+                    .setUsesChronometer(true)
+                    .setChronometerCountDown(true)
+                    .build();
+        } else {
+            notification = new NotificationCompat.Builder(context)
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setContentTitle("Active Pomodor")
+                    .setContentText("Time until break")
+                    .setContentIntent(resultPendingIntent)
+                    .setOngoing(true)
+                    .setTicker("Time until break")
+                    .setWhen(when)
+                    .setUsesChronometer(true)
+                    .build();
 
-        notificationManager.notify(1, notification);
-
+        }
+        notificationManager.notify(1, this.notification);
     }
 
     @Override

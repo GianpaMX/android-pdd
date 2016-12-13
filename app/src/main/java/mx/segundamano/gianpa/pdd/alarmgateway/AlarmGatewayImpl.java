@@ -27,6 +27,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     private long startTimeInMillis;
     private File file;
     private AlarmManager alarmManager;
+    private PendingIntent pendingIntent;
 
     public AlarmGatewayImpl(Context context, AlarmManager alarmManager) {
         this.context = context;
@@ -48,12 +49,18 @@ public class AlarmGatewayImpl implements AlarmGateway {
     }
 
     private void setTimeoutAlarm() {
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-
         long timeUpInMillis = getTimeUpInMillis();
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeUpInMillis, pendingIntent);
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeUpInMillis, getPendingIntent());
+    }
+
+    private PendingIntent getPendingIntent() {
+        if (pendingIntent == null) {
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        }
+
+        return pendingIntent;
     }
 
     @Override
@@ -104,6 +111,8 @@ public class AlarmGatewayImpl implements AlarmGateway {
             handler.removeCallbacks(ticker);
             handler = null;
         }
+
+        alarmManager.cancel(getPendingIntent());
 
         if (file.exists()) file.delete();
     }

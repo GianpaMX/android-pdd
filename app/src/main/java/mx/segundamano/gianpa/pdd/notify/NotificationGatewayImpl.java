@@ -29,11 +29,11 @@ public class NotificationGatewayImpl implements NotificationGateway {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             notification = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Active Pomodor")
-                    .setContentText("Time until break")
+                    .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
+                    .setContentText(context.getString(R.string.notification_active_pomodoro_text))
                     .setContentIntent(resultPendingIntent)
                     .setOngoing(true)
-                    .setTicker("Time until break")
+                    .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
                     .setWhen(when)
                     .setUsesChronometer(true)
                     .setChronometerCountDown(true)
@@ -41,11 +41,11 @@ public class NotificationGatewayImpl implements NotificationGateway {
         } else {
             notification = new NotificationCompat.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle("Active Pomodor")
-                    .setContentText("Time until break")
+                    .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
+                    .setContentText(context.getString(R.string.notification_active_pomodoro_text))
                     .setContentIntent(resultPendingIntent)
                     .setOngoing(true)
-                    .setTicker("Time until break")
+                    .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
                     .setWhen(when)
                     .setUsesChronometer(true)
                     .build();
@@ -60,8 +60,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
         notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Time up")
-                .setContentText("Time to take a break")
+                .setContentTitle(context.getString(R.string.notification_time_up_title))
+                .setContentText(context.getString(R.string.notification_time_up_text))
                 .setContentIntent(resultPendingIntent)
                 .build();
 

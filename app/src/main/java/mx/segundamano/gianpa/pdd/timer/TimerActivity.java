@@ -16,6 +16,8 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     @Inject
     public TimerPresenter presenter;
 
+    private TimerFragment timerFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -24,6 +26,8 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         inject(this);
+
+        timerFragment = getTimerFragment();
     }
 
     @Override
@@ -31,8 +35,18 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         super.onStart();
 
         getAndroidApp().setCurrentActivity(this);
+    }
 
-        presenter.setView(getTimerFragment());
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter.onActivityResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        presenter.onActivityPause();
     }
 
     @Override
@@ -40,8 +54,6 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         super.onStop();
 
         getAndroidApp().setCurrentActivity(null);
-
-        presenter.setView(null);
     }
 
     private void inject(TimerActivity timerActivity) {
@@ -68,25 +80,21 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     public void onStartButtonClick(View view) {
-        presenter.onStartButtonClick();
     }
 
     public void onStopButtonClick(View view) {
-        presenter.onPauseButtonClick();
     }
 
     @Override
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
-        presenter.resume();
+        presenter.setView(timerFragment);
     }
 
     @Override
     public void onStopClick(int stopReason) {
-        presenter.stop(stopReason);
     }
 
     @Override
     public void onUnpauseClick() {
-        presenter.unpause();
     }
 }

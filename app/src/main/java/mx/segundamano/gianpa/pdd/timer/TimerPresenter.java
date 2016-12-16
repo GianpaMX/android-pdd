@@ -4,9 +4,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
+public class TimerPresenter implements TimerUseCase.UserActiveCallback {
+    private static final String TAG = TimerPresenter.class.getName();
 
-public class TimerPresenter implements TimerUseCase.Callback {
     private TimerUseCase timerUseCase;
     private TimerView view;
 
@@ -14,66 +14,31 @@ public class TimerPresenter implements TimerUseCase.Callback {
         this.timerUseCase = timerUseCase;
     }
 
-    public void onStartButtonClick() {
-        timerUseCase.start(this);
-        if (view != null) view.showStopButton();
+    public void setView(TimerView view) {
+        this.view = view;
+    }
+
+    public void onActivityResume() {
+        timerUseCase.userActive(this);
+    }
+
+    public void onActivityPause() {
+        timerUseCase.userInactive();
     }
 
     @Override
-    public void onTimeUp() {
-        if (view != null) {
-            view.ringAlarm();
-            view.showStartButton();
-        }
+    public void onTick(long remainingTime) {
+        view.onTick(formatTime(remainingTime));
     }
 
     @Override
-    public void onTick(long remainingTimeInMillis) {
-        if (view != null) view.onTick(formatTime(remainingTimeInMillis));
+    public void onPomodoroResume() {
+        view.showStopButton();
     }
 
     public String formatTime(long remainingTimeInMillis) {
         Date date = new Date(remainingTimeInMillis);
         DateFormat formatter = new SimpleDateFormat("mm:ss");
         return formatter.format(date);
-    }
-
-    @Override
-    public void unableToResume() {
-        if (view != null) view.showStartButton();
-    }
-
-    @Override
-    public void onPause(long remainingTimeInMillis) {
-        if (view != null) {
-            view.onTick(formatTime(remainingTimeInMillis));
-            view.askStopReasons();
-        }
-    }
-
-    public void setView(TimerView view) {
-        this.view = view;
-
-        if(view != null) {
-            view.onStopReasonsReady(TimerUseCase.STOP_REASONS);
-        }
-    }
-
-    public void resume() {
-        if (view != null) view.showStopButton();
-        timerUseCase.resume(this);
-    }
-
-    public void onPauseButtonClick() {
-        timerUseCase.pause();
-        if (view != null) view.showStartButton();
-    }
-
-    public void stop(int stopReason) {
-        timerUseCase.stop(stopReason);
-    }
-
-    public void unpause() {
-        timerUseCase.unpause();
     }
 }

@@ -11,6 +11,7 @@ import dagger.Provides;
 import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGatewayImpl;
+import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.notify.NotificationGatewayImpl;
 import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
@@ -33,7 +34,7 @@ public class AndroidAppModule {
     @Provides
     @Singleton
     public AlarmGateway provideAlarmGateway(AlarmManager alarmManager) {
-        return new AlarmGatewayImpl(androidApp, alarmManager);
+        return new AlarmGatewayImpl();
     }
 
     @Provides
@@ -64,5 +65,11 @@ public class AndroidAppModule {
     @Singleton
     public AlarmManager provideAlarmManager() {
         return (AlarmManager) androidApp.getSystemService(Context.ALARM_SERVICE);
+    }
+
+    @Provides
+    @Singleton
+    public PomodoroRepository providesPomodoroRepository() {
+        return new PomodoroRepository();
     }
 }

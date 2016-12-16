@@ -21,10 +21,6 @@ public class NotifyUseCase {
 
     public void background() {
         isBackground = true;
-
-        if (alarmGateway.isActive()) {
-            notificationGateway.showOnGoingNotification(alarmGateway.getEndTimeInMillis());
-        }
     }
 
     public void foreground() {

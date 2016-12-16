@@ -1,93 +1,55 @@
 package mx.segundamano.gianpa.pdd.timer;
 
-import java.util.Calendar;
-
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
-import mx.segundamano.gianpa.pdd.alarmgateway.UnableToResume;
-import mx.segundamano.gianpa.pdd.wakeup.WakeupUseCase;
+import mx.segundamano.gianpa.pdd.data.Pomodoro;
+import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 
 public class TimerUseCase implements AlarmGateway.TickListener {
-    private long pomodoroLenght = TimeConstants.DEFAULT_POMODORO_TIME;
-    public static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
 
+    private PomodoroRepository pomodoroRepository;
+    private UserActiveCallback userActiveCallback;
+    private Pomodoro activePomodoro;
     private AlarmGateway alarmGateway;
-    private Callback callback;
-    private long startTimeInMillis;
-    private long remainingTime;
 
-    public TimerUseCase(AlarmGateway alarmGateway) {
+    public TimerUseCase(PomodoroRepository pomodoroRepository, AlarmGateway alarmGateway) {
+        this.pomodoroRepository = pomodoroRepository;
         this.alarmGateway = alarmGateway;
     }
 
-    public void start(Callback callback) {
-        this.callback = callback;
-        startTimeInMillis = getCurrentTimeInMillis();
+    public void userActive(final UserActiveCallback userActiveCallback) {
+        this.userActiveCallback = userActiveCallback;
 
-        alarmGateway.addTickListener(this);
-        alarmGateway.start(startTimeInMillis, TimeConstants.DEFAULT_POMODORO_TIME);
+        this.pomodoroRepository.findActivePomodoro(new PomodoroRepository.Callback<Pomodoro>() {
+            @Override
+            public void onSuccess(Pomodoro result) {
+                activePomodoro = result;
+
+                if (activePomodoro != null) {
+                    alarmGateway.resumeTicker(TimerUseCase.this);
+
+                    userActiveCallback.onPomodoroResume();
+                }
+            }
+        });
     }
 
-    private long getCurrentTimeInMillis() {
-        Calendar calendar = Calendar.getInstance();
-        return calendar.getTimeInMillis();
+    public void userInactive() {
+        this.userActiveCallback = null;
+
+        if(activePomodoro != null) {
+            alarmGateway.stopTicker();
+        }
     }
 
     @Override
     public void onTick() {
-        callback.onTick(startTimeInMillis + pomodoroLenght - getCurrentTimeInMillis());
+        userActiveCallback.onTick(activePomodoro.getRemainingTime(System.currentTimeMillis()));
     }
 
-    @Override
-    public void onTimeUp() {
-        callback.onTimeUp();
-    }
+    public interface UserActiveCallback {
 
-    @Override
-    public void onError(Throwable error) {
-        if (error instanceof UnableToResume) {
-            callback.unableToResume();
-            callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
-        }
-    }
+        void onTick(long remainingTime);
 
-    public void resume(Callback callback) {
-        this.callback = callback;
-
-        if (alarmGateway.isActive()) {
-            alarmGateway.addTickListener(this);
-            alarmGateway.resume();
-            startTimeInMillis = alarmGateway.getStartTimeInMillis();
-        } else {
-            callback.unableToResume();
-            callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
-        }
-    }
-
-    public void stop(int stopReason) {
-        alarmGateway.stop();
-        alarmGateway.removeTickerListener(this);
-        callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
-    }
-
-    public void pause() {
-        remainingTime = alarmGateway.getRemainingTime();
-        alarmGateway.stop();
-
-        callback.onPause(remainingTime);
-    }
-
-    public void unpause() {
-        startTimeInMillis = getCurrentTimeInMillis();
-
-        alarmGateway.addTickListener(this);
-        alarmGateway.start(startTimeInMillis, remainingTime);
-    }
-
-    public interface Callback extends WakeupUseCase.Callback {
-        void onTick(long remainingTimeInMillis);
-
-        void unableToResume();
-
-        void onPause(long remainingTimeInMillis);
+        void onPomodoroResume();
     }
 }

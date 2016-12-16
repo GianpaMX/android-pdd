@@ -2,7 +2,7 @@ package mx.segundamano.gianpa.pdd.wakeup;
 
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
 
-public class WakeupUseCase implements AlarmGateway.TimeUpListener {
+public class WakeupUseCase {
     private AlarmGateway alarmGateway;
     private Callback callback;
 
@@ -12,14 +12,6 @@ public class WakeupUseCase implements AlarmGateway.TimeUpListener {
 
     public void timeUp(Callback callback) {
         this.callback = callback;
-
-        alarmGateway.addTimeUpListener(this);
-        alarmGateway.timeUp();
-    }
-
-    @Override
-    public void onTimeUp() {
-        callback.onTimeUp();
     }
 
     public interface Callback {

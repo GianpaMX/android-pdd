@@ -2,6 +2,7 @@ package mx.segundamano.gianpa.pdd.data;
 
 public class Pomodoro {
     public static final int ACTIVE = 1;
+    public static final int INTERRUPTED = 2;
 
     public Integer id;
     public long startTimeInMillis;
@@ -18,6 +19,10 @@ public class Pomodoro {
 
     public static class Builder {
         private Pomodoro pomodoro;
+
+        public Builder() {
+            pomodoro = new Pomodoro();
+        }
 
         public Builder setId(Integer id) {
             pomodoro.id = id;

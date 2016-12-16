@@ -32,8 +32,12 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback {
     }
 
     @Override
-    public void onActivePomodoro() {
-        view.showStopButton();
+    public void onPomodoroStatusChanged(int status) {
+        if (status == POMODORO_STATUS_ACTIVE) {
+            view.showStopButton();
+        } else if (status == POMODORO_STATUS_INTERRUPTED) {
+            view.showStartButton();
+        }
     }
 
     public String formatTime(long remainingTimeInMillis) {
@@ -44,5 +48,9 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback {
 
     public void onStartButtonClick() {
         timerUseCase.startPomodoro();
+    }
+
+    public void onStopButtonClick() {
+        timerUseCase.stopPomodoro();
     }
 }

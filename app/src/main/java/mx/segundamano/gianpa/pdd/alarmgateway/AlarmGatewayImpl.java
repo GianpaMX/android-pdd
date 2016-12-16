@@ -25,6 +25,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     private Listeners listeners;
     private Handler handler;
     private long startTimeInMillis;
+    private long endTimeInMillis;
     private File file;
     private AlarmManager alarmManager;
     private PendingIntent pendingIntent;
@@ -38,20 +39,19 @@ public class AlarmGatewayImpl implements AlarmGateway {
     }
 
     @Override
-    public void start(long startTimeInMillis) {
+    public void start(long startTimeInMillis, long duration) {
         this.startTimeInMillis = startTimeInMillis;
 
-        saveStartTime(startTimeInMillis);
-
         startTicker();
+        setTimeoutAlarm(duration);
 
-        setTimeoutAlarm();
+        save(startTimeInMillis, endTimeInMillis);
     }
 
-    private void setTimeoutAlarm() {
-        long timeUpInMillis = getTimeUpInMillis();
+    private void setTimeoutAlarm(long duration) {
+        endTimeInMillis = getTimeUpInMillis(duration);
 
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, timeUpInMillis, getPendingIntent());
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, endTimeInMillis, getPendingIntent());
     }
 
     private PendingIntent getPendingIntent() {
@@ -64,11 +64,16 @@ public class AlarmGatewayImpl implements AlarmGateway {
     }
 
     @Override
-    public long getTimeUpInMillis() {
+    public long getTimeUpInMillis(long duration) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(startTimeInMillis);
-        calendar.add(Calendar.MILLISECOND, (int) TimeConstants.DEFAULT_POMODORO_TIME);
+        calendar.add(Calendar.MILLISECOND, (int) duration);
         return calendar.getTimeInMillis();
+    }
+
+    @Override
+    public long getRemainingTime() {
+        return endTimeInMillis - startTimeInMillis;
     }
 
     private void startTicker() {
@@ -89,6 +94,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
                 byte[] bytes = new byte[8];
                 inputStream.read(bytes);
                 startTimeInMillis = ByteUtils.bytesToLong(bytes);
+                endTimeInMillis = ByteUtils.bytesToLong(bytes);
             } catch (FileNotFoundException e) {
                 listeners.onError(new UnableToResume());
             } catch (IOException e) {
@@ -143,6 +149,11 @@ public class AlarmGatewayImpl implements AlarmGateway {
     }
 
     @Override
+    public void removeTickerListener(TickListener tickListener) {
+        listeners.remove(tickListener);
+    }
+
+    @Override
     public void addTimeUpListener(@NonNull TimeUpListener listener) {
         listeners.add(listener);
     }
@@ -152,11 +163,17 @@ public class AlarmGatewayImpl implements AlarmGateway {
         return startTimeInMillis;
     }
 
-    private void saveStartTime(long startTimeInMillis) {
+    @Override
+    public long getEndTimeInMillis() {
+        return endTimeInMillis;
+    }
+
+    private void save(long startTimeInMillis, long duration) {
         try {
             FileOutputStream outputStream = new FileOutputStream(file);
 
             outputStream.write(ByteUtils.longToBytes(startTimeInMillis));
+            outputStream.write(ByteUtils.longToBytes(duration));
 
             outputStream.close();
         } catch (IOException e) {

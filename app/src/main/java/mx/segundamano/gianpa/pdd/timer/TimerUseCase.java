@@ -8,10 +8,12 @@ import mx.segundamano.gianpa.pdd.wakeup.WakeupUseCase;
 
 public class TimerUseCase implements AlarmGateway.TickListener {
     private long pomodoroLenght = TimeConstants.DEFAULT_POMODORO_TIME;
+    public static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
 
     private AlarmGateway alarmGateway;
     private Callback callback;
     private long startTimeInMillis;
+    private long remainingTime;
 
     public TimerUseCase(AlarmGateway alarmGateway) {
         this.alarmGateway = alarmGateway;
@@ -22,7 +24,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         startTimeInMillis = getCurrentTimeInMillis();
 
         alarmGateway.addTickListener(this);
-        alarmGateway.start(startTimeInMillis);
+        alarmGateway.start(startTimeInMillis, TimeConstants.DEFAULT_POMODORO_TIME);
     }
 
     private long getCurrentTimeInMillis() {
@@ -61,14 +63,31 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         }
     }
 
-    public void stop() {
+    public void stop(int stopReason) {
         alarmGateway.stop();
+        alarmGateway.removeTickerListener(this);
         callback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+    }
+
+    public void pause() {
+        remainingTime = alarmGateway.getRemainingTime();
+        alarmGateway.stop();
+
+        callback.onPause(remainingTime);
+    }
+
+    public void unpause() {
+        startTimeInMillis = getCurrentTimeInMillis();
+
+        alarmGateway.addTickListener(this);
+        alarmGateway.start(startTimeInMillis, remainingTime);
     }
 
     public interface Callback extends WakeupUseCase.Callback {
         void onTick(long remainingTimeInMillis);
 
         void unableToResume();
+
+        void onPause(long remainingTimeInMillis);
     }
 }

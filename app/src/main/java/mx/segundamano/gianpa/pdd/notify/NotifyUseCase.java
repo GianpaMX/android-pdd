@@ -23,7 +23,7 @@ public class NotifyUseCase {
         isBackground = true;
 
         if (alarmGateway.isActive()) {
-            notificationGateway.showOnGoingNotification(alarmGateway.getTimeUpInMillis());
+            notificationGateway.showOnGoingNotification(alarmGateway.getEndTimeInMillis());
         }
     }
 

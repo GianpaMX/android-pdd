@@ -8,4 +8,8 @@ public interface TimerView {
     void onTick(String remainingTime);
 
     void ringAlarm();
+
+    void onStopReasonsReady(String[] stopReasons);
+
+    void askStopReasons();
 }

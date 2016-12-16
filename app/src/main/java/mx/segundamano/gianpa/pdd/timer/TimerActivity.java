@@ -60,7 +60,7 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         TimerFragment timerFragment = timerFragment = (TimerFragment) getSupportFragmentManager().findFragmentById(R.id.timer_fragment_container);
 
         if (timerFragment == null) {
-            timerFragment = new TimerFragment();
+            timerFragment = TimerFragment.newInstance();
             getSupportFragmentManager().beginTransaction().add(R.id.timer_fragment_container, timerFragment).commit();
         }
 
@@ -72,11 +72,21 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     public void onStopButtonClick(View view) {
-        presenter.onStopButtonClick();
+        presenter.onPauseButtonClick();
     }
 
     @Override
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
         presenter.resume();
+    }
+
+    @Override
+    public void onStopClick(int stopReason) {
+        presenter.stop(stopReason);
+    }
+
+    @Override
+    public void onUnpauseClick() {
+        presenter.unpause();
     }
 }

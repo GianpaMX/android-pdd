@@ -32,7 +32,7 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback {
     }
 
     @Override
-    public void onPomodoroResume() {
+    public void onActivePomodoro() {
         view.showStopButton();
     }
 
@@ -40,5 +40,9 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback {
         Date date = new Date(remainingTimeInMillis);
         DateFormat formatter = new SimpleDateFormat("mm:ss");
         return formatter.format(date);
+    }
+
+    public void onStartButtonClick() {
+        timerUseCase.startPomodoro();
     }
 }

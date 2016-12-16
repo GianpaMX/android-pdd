@@ -8,6 +8,7 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import io.realm.Realm;
 import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
 import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGatewayImpl;
@@ -69,7 +70,16 @@ public class AndroidAppModule {
 
     @Provides
     @Singleton
-    public PomodoroRepository providesPomodoroRepository() {
-        return new PomodoroRepository();
+    public PomodoroRepository providesPomodoroRepository(Realm realm) {
+        return new PomodoroRepository(realm);
     }
+
+    @Singleton
+    @Provides
+    public Realm provideRealm() {
+        Realm.init(androidApp);
+
+        return Realm.getDefaultInstance();
+    }
+
 }

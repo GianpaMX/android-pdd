@@ -80,6 +80,7 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     public void onStartButtonClick(View view) {
+        presenter.onStartButtonClick();
     }
 
     public void onStopButtonClick(View view) {

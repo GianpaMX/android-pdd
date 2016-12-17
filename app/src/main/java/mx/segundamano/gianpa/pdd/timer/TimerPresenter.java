@@ -4,7 +4,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TimerPresenter implements TimerUseCase.UserActiveCallback {
+public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUseCase.StopPomodoroCallback {
     private static final String TAG = TimerPresenter.class.getName();
 
     private TimerUseCase timerUseCase;
@@ -59,7 +59,16 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback {
     }
 
     public void onStopButtonClick() {
-        timerUseCase.stopPomodoro();
+        timerUseCase.stopPomodoro(this);
+    }
+
+    @Override
+    public void onStopReasonsReady(String[] stopReasons) {
+        if (view != null) view.askStopReasons(stopReasons);
+    }
+
+    public void onStopReasonClick(int stopReason) {
+        timerUseCase.stopPomodoro(stopReason);
     }
 
     public void stopOnError(int errorAction) {

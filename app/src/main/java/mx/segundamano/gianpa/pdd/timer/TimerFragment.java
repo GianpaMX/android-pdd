@@ -24,7 +24,6 @@ public class TimerFragment extends Fragment implements TimerView {
     private Button stopButton;
     private TextView timerTextView;
     private TimerFragmentContainer container;
-    private String[] stopReasons;
 
     public static TimerFragment newInstance() {
         return new TimerFragment();
@@ -35,15 +34,6 @@ public class TimerFragment extends Fragment implements TimerView {
         super.onAttach(context);
         if (getActivity() instanceof TimerFragmentContainer) {
             container = (TimerFragmentContainer) getActivity();
-        }
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            stopReasons = savedInstanceState.getStringArray(STOP_REASONS);
         }
     }
 
@@ -63,12 +53,6 @@ public class TimerFragment extends Fragment implements TimerView {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (container != null) container.onTimerFragmentViewCreated(savedInstanceState);
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putStringArray(STOP_REASONS, stopReasons);
     }
 
     @Override
@@ -97,12 +81,7 @@ public class TimerFragment extends Fragment implements TimerView {
     }
 
     @Override
-    public void onStopReasonsReady(String[] stopReasons) {
-        this.stopReasons = stopReasons;
-    }
-
-    @Override
-    public void askStopReasons() {
+    public void askStopReasons(String[] stopReasons) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle("Why did you stop?")
                 .setItems(stopReasons, onStopClickListener)
@@ -125,7 +104,7 @@ public class TimerFragment extends Fragment implements TimerView {
     private DialogInterface.OnClickListener onStopClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int stopReason) {
-            if (container != null) container.onStopClick(stopReason);
+            if (container != null) container.onStopReasonClick(stopReason);
         }
     };
     private DialogInterface.OnClickListener onUnpauseClickListener = new DialogInterface.OnClickListener() {
@@ -146,7 +125,7 @@ public class TimerFragment extends Fragment implements TimerView {
 
         void onTimerFragmentViewCreated(Bundle savedInstanceState);
 
-        void onStopClick(int stopReason);
+        void onStopReasonClick(int stopReason);
 
         void onUnpauseClick();
 

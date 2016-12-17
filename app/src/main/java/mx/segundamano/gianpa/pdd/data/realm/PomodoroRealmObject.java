@@ -10,6 +10,7 @@ public class PomodoroRealmObject extends RealmObject {
     public long startTimeInMillis;
     public long endTimeInMillis;
     public int status;
+    public Integer stopReason;
 
     public PomodoroRealmObject() {
     }
@@ -19,6 +20,7 @@ public class PomodoroRealmObject extends RealmObject {
         this.startTimeInMillis = pomodoro.startTimeInMillis;
         this.endTimeInMillis = pomodoro.endTimeInMillis;
         this.status = pomodoro.status;
+        this.stopReason = pomodoro.stopReason;
     }
 
     public Pomodoro toEntity() {
@@ -27,6 +29,7 @@ public class PomodoroRealmObject extends RealmObject {
                 .setStartTimeInMillis(startTimeInMillis)
                 .setEndTimeInMillis(endTimeInMillis)
                 .setStatus(status)
+                .setStopReason(stopReason)
                 .build();
     }
 }

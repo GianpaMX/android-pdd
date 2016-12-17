@@ -93,7 +93,8 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     @Override
-    public void onStopClick(int stopReason) {
+    public void onStopReasonClick(int stopReason) {
+        presenter.onStopReasonClick(stopReason);
     }
 
     @Override

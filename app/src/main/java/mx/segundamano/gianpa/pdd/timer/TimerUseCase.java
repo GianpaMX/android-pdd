@@ -9,6 +9,8 @@ public class TimerUseCase implements AlarmGateway.TickListener {
     public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
     public static final int ERROR_ACTION_DISCARD = 2;
 
+    private static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
+
     private PomodoroRepository pomodoroRepository;
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
@@ -75,8 +77,13 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         });
     }
 
-    public void stopPomodoro() {
+    public void stopPomodoro(StopPomodoroCallback callback) {
+        callback.onStopReasonsReady(STOP_REASONS);
+    }
+
+    public void stopPomodoro(int stopReason) {
         activePomodoro.status = Pomodoro.INTERRUPTED;
+        activePomodoro.stopReason = stopReason;
         pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
             @Override
             public void onSuccess(Pomodoro result) {
@@ -91,7 +98,8 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         activePomodoro.status = Pomodoro.COMPLETE;
 
         if (errorAction == ERROR_ACTION_DISCARD) activePomodoro.status = Pomodoro.DISCARDED;
-        if (errorAction == ERROR_ACTION_KEEP_AND_DISCARD_TIME) activePomodoro.endTimeInMillis = activePomodoro.startTimeInMillis;
+        if (errorAction == ERROR_ACTION_KEEP_AND_DISCARD_TIME)
+            activePomodoro.endTimeInMillis = activePomodoro.startTimeInMillis;
 
         pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
             @Override
@@ -113,5 +121,9 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         void onTick(long remainingTime);
 
         void onPomodoroStatusChanged(int status);
+    }
+
+    public interface StopPomodoroCallback {
+        void onStopReasonsReady(String[] stopReasons);
     }
 }

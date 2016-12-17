@@ -9,9 +9,7 @@ public interface TimerView {
 
     void ringAlarm();
 
-    void onStopReasonsReady(String[] stopReasons);
-
-    void askStopReasons();
+    void askStopReasons(String[] stopReasons);
 
     void showErrorDialog();
 }

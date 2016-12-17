@@ -11,6 +11,7 @@ public class Pomodoro {
     public long startTimeInMillis;
     public long endTimeInMillis;
     public int status;
+    public Integer stopReason;
 
     public long getRemainingTime(long currentTimeMillis) {
         return endTimeInMillis - currentTimeMillis;
@@ -44,6 +45,11 @@ public class Pomodoro {
 
         public Builder setStatus(int status) {
             pomodoro.status = status;
+            return this;
+        }
+
+        public Builder setStopReason(Integer stopReason) {
+            pomodoro.stopReason = stopReason;
             return this;
         }
 

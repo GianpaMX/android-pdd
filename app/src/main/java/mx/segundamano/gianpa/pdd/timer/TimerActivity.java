@@ -31,13 +31,6 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-
-        getAndroidApp().setCurrentActivity(this);
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         presenter.onActivityResume();
@@ -47,13 +40,6 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     protected void onPause() {
         super.onPause();
         presenter.onActivityPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        getAndroidApp().setCurrentActivity(null);
     }
 
     private void inject(TimerActivity timerActivity) {

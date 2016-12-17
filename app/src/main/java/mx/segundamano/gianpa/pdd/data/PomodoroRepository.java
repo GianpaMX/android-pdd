@@ -6,8 +6,6 @@ import io.realm.Sort;
 import mx.segundamano.gianpa.pdd.data.realm.PomodoroRealmObject;
 
 public class PomodoroRepository {
-    private static final int STATUS_ACTIVE = 1;
-
     private Realm realm;
 
     public PomodoroRepository(Realm realm) {
@@ -17,7 +15,7 @@ public class PomodoroRepository {
     public void findActivePomodoro(Callback<Pomodoro> callback) {
         RealmResults<PomodoroRealmObject> results = realm
                 .where(PomodoroRealmObject.class)
-                .equalTo("status", STATUS_ACTIVE)
+                .equalTo("status", Pomodoro.ACTIVE)
                 .findAllSorted("startTimeInMillis", Sort.DESCENDING);
 
         callback.onSuccess(results.size() > 0 ? results.first().toEntity() : null);
@@ -42,6 +40,15 @@ public class PomodoroRepository {
     private Integer getNextKey(Realm realm) {
         Number number = realm.where(PomodoroRealmObject.class).max("id");
         return 1 + (number == null ? 0 : number.intValue());
+    }
+
+    public void findTimeUpPomodoro(Callback<Pomodoro> callback) {
+        RealmResults<PomodoroRealmObject> results = realm
+                .where(PomodoroRealmObject.class)
+                .equalTo("status", Pomodoro.TIME_UP)
+                .findAllSorted("startTimeInMillis", Sort.DESCENDING);
+
+        callback.onSuccess(results.size() > 0 ? results.first().toEntity() : null);
     }
 
     public interface Callback<T> {

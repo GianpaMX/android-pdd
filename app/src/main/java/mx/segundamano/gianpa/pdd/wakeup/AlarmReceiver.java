@@ -1,28 +1,22 @@
 package mx.segundamano.gianpa.pdd.wakeup;
 
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import javax.inject.Inject;
 
 import mx.segundamano.gianpa.pdd.AndroidApp;
-import mx.segundamano.gianpa.pdd.R;
 import mx.segundamano.gianpa.pdd.di.AndroidAppComponent;
 import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
-import mx.segundamano.gianpa.pdd.timer.TimerActivity;
 
 public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Callback {
     @Inject
     public WakeupUseCase wakeupUseCase;
 
-//    @Inject
-//    public NotifyUseCase notifyUseCase;
+    @Inject
+    public NotifyUseCase notifyUseCase;
 
     private Context context;
 
@@ -50,7 +44,7 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
 
     @Override
     public void onTimeUp() {
-//        notifyUseCase.timeUp();
+        notifyUseCase.timeUp();
         WakeLocker.release();
     }
 

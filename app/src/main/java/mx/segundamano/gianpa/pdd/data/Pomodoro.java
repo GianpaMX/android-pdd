@@ -6,6 +6,7 @@ public class Pomodoro {
     public static final int ERROR = 3;
     public static final int COMPLETE = 4;
     public static final int DISCARDED = 5;
+    public static final int TIME_UP = 6;
 
     public Integer id;
     public long startTimeInMillis;

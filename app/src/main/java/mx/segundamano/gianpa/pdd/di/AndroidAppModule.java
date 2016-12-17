@@ -12,12 +12,12 @@ import io.realm.Realm;
 import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.alarm.AlarmImpl;
-import mx.segundamano.gianpa.pdd.ticker.Ticker;
-import mx.segundamano.gianpa.pdd.ticker.TickerImpl;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.notify.NotificationGatewayImpl;
 import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
+import mx.segundamano.gianpa.pdd.ticker.TickerImpl;
 import mx.segundamano.gianpa.pdd.wakeup.WakeupUseCase;
 
 @Module
@@ -48,8 +48,8 @@ public class AndroidAppModule {
 
     @Provides
     @Singleton
-    public WakeupUseCase provideWakeupUseCase(Alarm alarm) {
-        return new WakeupUseCase(alarm);
+    public WakeupUseCase provideWakeupUseCase(Alarm alarm, PomodoroRepository pomodoroRepository) {
+        return new WakeupUseCase(alarm, pomodoroRepository);
     }
 
     @Provides

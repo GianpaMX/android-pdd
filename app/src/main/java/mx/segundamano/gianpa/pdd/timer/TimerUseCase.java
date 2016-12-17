@@ -5,8 +5,6 @@ import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
-import static mx.segundamano.gianpa.pdd.timer.TimerUseCase.UserActiveCallback.POMODORO_STATUS_COMPLETE;
-
 public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpListener {
 
     public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
@@ -30,27 +28,45 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
         this.userActiveCallback = userActiveCallback;
         alarm.setActiveTimeUpListener(TimerUseCase.this);
 
-        this.pomodoroRepository.findActivePomodoro(new PomodoroRepository.Callback<Pomodoro>() {
-            @Override
-            public void onSuccess(Pomodoro result) {
-                activePomodoro = result;
-
-                if (activePomodoro == null) {
-                    userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
-                    return;
-                }
-
-                if (activePomodoro.endTimeInMillis < System.currentTimeMillis()) {
-                    userActiveCallback.onPomodoroStatusChanged(Pomodoro.ERROR);
-                    return;
-                }
-
-
-                ticker.resume(TimerUseCase.this);
-                userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
-            }
-        });
+        pomodoroRepository.findTimeUpPomodoro(findTimeUpPomodoroCallback);
     }
+
+    private final PomodoroRepository.Callback<Pomodoro> findTimeUpPomodoroCallback = new PomodoroRepository.Callback<Pomodoro>() {
+        @Override
+        public void onSuccess(Pomodoro result) {
+            if (result == null) {
+                pomodoroRepository.findActivePomodoro(findActivePomodoroCallback);
+                return;
+            }
+
+            activePomodoro = result;
+
+            ticker.stop();
+            userActiveCallback.onTick(0);
+            userActiveCallback.onTimeUp();
+        }
+    };
+
+    private PomodoroRepository.Callback<Pomodoro> findActivePomodoroCallback = new PomodoroRepository.Callback<Pomodoro>() {
+        @Override
+        public void onSuccess(Pomodoro result) {
+            activePomodoro = result;
+
+            if (activePomodoro == null) {
+                userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+                return;
+            }
+
+            if (activePomodoro.endTimeInMillis < System.currentTimeMillis()) {
+                userActiveCallback.onPomodoroStatusChanged(Pomodoro.ERROR);
+                return;
+            }
+
+
+            ticker.resume(TimerUseCase.this);
+            userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
+        }
+    };
 
     public void userInactive() {
         userActiveCallback = null;

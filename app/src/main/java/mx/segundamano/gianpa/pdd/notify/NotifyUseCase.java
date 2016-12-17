@@ -1,15 +1,15 @@
 package mx.segundamano.gianpa.pdd.notify;
 
-import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
 public class NotifyUseCase {
 
-    private AlarmGateway alarmGateway;
+    private Ticker ticker;
     private NotificationGateway notificationGateway;
     private boolean isBackground;
 
-    public NotifyUseCase(AlarmGateway alarmGateway, NotificationGateway notificationGateway) {
-        this.alarmGateway = alarmGateway;
+    public NotifyUseCase(Ticker ticker, NotificationGateway notificationGateway) {
+        this.ticker = ticker;
         this.notificationGateway = notificationGateway;
     }
 

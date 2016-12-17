@@ -1,13 +1,13 @@
 package mx.segundamano.gianpa.pdd.wakeup;
 
-import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
 public class WakeupUseCase {
-    private AlarmGateway alarmGateway;
+    private Ticker ticker;
     private Callback callback;
 
-    public WakeupUseCase(AlarmGateway alarmGateway) {
-        this.alarmGateway = alarmGateway;
+    public WakeupUseCase(Ticker ticker) {
+        this.ticker = ticker;
     }
 
     public void timeUp(Callback callback) {

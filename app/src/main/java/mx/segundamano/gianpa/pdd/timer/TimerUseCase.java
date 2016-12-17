@@ -1,10 +1,10 @@
 package mx.segundamano.gianpa.pdd.timer;
 
-import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 
-public class TimerUseCase implements AlarmGateway.TickListener {
+public class TimerUseCase implements Ticker.TickListener {
 
     public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
     public static final int ERROR_ACTION_DISCARD = 2;
@@ -14,11 +14,11 @@ public class TimerUseCase implements AlarmGateway.TickListener {
     private PomodoroRepository pomodoroRepository;
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
-    private AlarmGateway alarmGateway;
+    private Ticker ticker;
 
-    public TimerUseCase(PomodoroRepository pomodoroRepository, AlarmGateway alarmGateway) {
+    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker) {
         this.pomodoroRepository = pomodoroRepository;
-        this.alarmGateway = alarmGateway;
+        this.ticker = ticker;
     }
 
     public void userActive(final UserActiveCallback userActiveCallback) {
@@ -39,7 +39,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
                     return;
                 }
 
-                alarmGateway.resumeTicker(TimerUseCase.this);
+                ticker.resume(TimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
         });
@@ -49,7 +49,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         this.userActiveCallback = null;
 
         if (activePomodoro != null) {
-            alarmGateway.stopTicker();
+            ticker.stop();
         }
     }
 
@@ -71,7 +71,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
             @Override
             public void onSuccess(Pomodoro result) {
                 activePomodoro = result;
-                alarmGateway.resumeTicker(TimerUseCase.this);
+                ticker.resume(TimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
         });
@@ -87,7 +87,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
             @Override
             public void onSuccess(Pomodoro result) {
-                alarmGateway.stopTicker();
+                ticker.stop();
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.INTERRUPTED);
                 userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
             }
@@ -104,7 +104,7 @@ public class TimerUseCase implements AlarmGateway.TickListener {
         pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
             @Override
             public void onSuccess(Pomodoro result) {
-                alarmGateway.stopTicker();
+                ticker.stop();
                 userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
                 userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
             }

@@ -1,8 +1,8 @@
-package mx.segundamano.gianpa.pdd.alarmgateway;
+package mx.segundamano.gianpa.pdd.ticker;
 
 import android.os.Handler;
 
-public class AlarmGatewayImpl implements AlarmGateway {
+public class TickerImpl implements Ticker {
 
     private static final long ONE_SECOND = 1000;
 
@@ -10,12 +10,12 @@ public class AlarmGatewayImpl implements AlarmGateway {
     private TickListener tickListener;
     private boolean isTickerActive;
 
-    public AlarmGatewayImpl() {
+    public TickerImpl() {
         isTickerActive = false;
     }
 
     @Override
-    public void resumeTicker(TickListener tickListener) {
+    public void resume(TickListener tickListener) {
         this.tickListener = tickListener;
 
         isTickerActive = true;
@@ -24,7 +24,7 @@ public class AlarmGatewayImpl implements AlarmGateway {
     }
 
     @Override
-    public void stopTicker() {
+    public void stop() {
         isTickerActive = false;
     }
 

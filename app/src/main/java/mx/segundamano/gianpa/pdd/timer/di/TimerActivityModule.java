@@ -2,7 +2,7 @@ package mx.segundamano.gianpa.pdd.timer.di;
 
 import dagger.Module;
 import dagger.Provides;
-import mx.segundamano.gianpa.pdd.alarmgateway.AlarmGateway;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.di.ActivityScope;
 import mx.segundamano.gianpa.pdd.timer.TimerActivity;
@@ -26,7 +26,7 @@ public class TimerActivityModule {
 
     @Provides
     @ActivityScope
-    public TimerUseCase provideTimerUseCase(PomodoroRepository pomodoroRepository, AlarmGateway alarmGateway) {
-        return new TimerUseCase(pomodoroRepository, alarmGateway);
+    public TimerUseCase provideTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker) {
+        return new TimerUseCase(pomodoroRepository, ticker);
     }
 }

@@ -9,6 +9,9 @@
     <string name="notification_active_pomodoro_ticker">Time until break</string>
     <string name="notification_time_up_title">Time up</string>
     <string name="notification_time_up_text">Time to take a break</string>
+    <string name="stop_reasons_dialog_title">Why did you stop?</string>
+    <string name="stop_reasons_dialog_cancel_text">Undo stop</string>
+    <string name="error_resuming_pomodoro_dialog_title">There was an error with this pomodoro. What do you want to do?</string>
 
     <string-array name="pomodoro_error_actions">
         <item>Keep it and discard time</item>

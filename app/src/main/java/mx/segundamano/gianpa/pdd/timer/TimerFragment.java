@@ -17,8 +17,6 @@ import android.widget.ViewSwitcher;
 import mx.segundamano.gianpa.pdd.R;
 
 public class TimerFragment extends Fragment implements TimerView {
-    public static final String STOP_REASONS = "STOP_REASONS";
-
     private ViewSwitcher buttonSwitcher;
     private Button startButton;
     private Button stopButton;
@@ -83,9 +81,9 @@ public class TimerFragment extends Fragment implements TimerView {
     @Override
     public void askStopReasons(String[] stopReasons) {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("Why did you stop?")
+                .setTitle(R.string.stop_reasons_dialog_title)
                 .setItems(stopReasons, onStopClickListener)
-                .setNegativeButton("Undo stop", onUnpauseClickListener)
+                .setNegativeButton(R.string.stop_reasons_dialog_cancel_text, onUnpauseClickListener)
                 .create();
 
         alertDialog.show();
@@ -94,8 +92,9 @@ public class TimerFragment extends Fragment implements TimerView {
     @Override
     public void showErrorDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle("There was an error with this pomodoro. What do you want to do?")
+                .setTitle(R.string.error_resuming_pomodoro_dialog_title)
                 .setItems(R.array.pomodoro_error_actions, onErrorActionSelectedListener)
+                .setCancelable(false)
                 .create();
 
         alertDialog.show();

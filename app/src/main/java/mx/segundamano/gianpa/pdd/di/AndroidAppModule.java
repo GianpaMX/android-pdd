@@ -10,6 +10,8 @@ import dagger.Module;
 import dagger.Provides;
 import io.realm.Realm;
 import mx.segundamano.gianpa.pdd.AndroidApp;
+import mx.segundamano.gianpa.pdd.alarm.Alarm;
+import mx.segundamano.gianpa.pdd.alarm.AlarmImpl;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
 import mx.segundamano.gianpa.pdd.ticker.TickerImpl;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
@@ -34,14 +36,20 @@ public class AndroidAppModule {
 
     @Provides
     @Singleton
-    public Ticker provideAlarmGateway(AlarmManager alarmManager) {
+    public Ticker provideTicker(AlarmManager alarmManager) {
         return new TickerImpl();
     }
 
     @Provides
     @Singleton
-    public WakeupUseCase provideWakeupUseCase(Ticker ticker) {
-        return new WakeupUseCase(ticker);
+    public Alarm provideAlarm(AlarmManager alarmManager) {
+        return new AlarmImpl(androidApp, alarmManager);
+    }
+
+    @Provides
+    @Singleton
+    public WakeupUseCase provideWakeupUseCase(Alarm alarm) {
+        return new WakeupUseCase(alarm);
     }
 
     @Provides

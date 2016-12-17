@@ -21,8 +21,8 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
     @Inject
     public WakeupUseCase wakeupUseCase;
 
-    @Inject
-    public NotifyUseCase notifyUseCase;
+//    @Inject
+//    public NotifyUseCase notifyUseCase;
 
     private Context context;
 
@@ -50,7 +50,12 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
 
     @Override
     public void onTimeUp() {
-        notifyUseCase.timeUp();
+//        notifyUseCase.timeUp();
+        WakeLocker.release();
+    }
+
+    @Override
+    public void ignore() {
         WakeLocker.release();
     }
 }

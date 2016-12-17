@@ -92,8 +92,19 @@ public class TimerFragment extends Fragment implements TimerView {
     @Override
     public void showErrorDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.error_resuming_pomodoro_dialog_title)
+                .setTitle(R.string.pomodoro_resume_dialog_error_title)
                 .setItems(R.array.pomodoro_error_actions, onErrorActionSelectedListener)
+                .setCancelable(false)
+                .create();
+
+        alertDialog.show();
+    }
+
+    @Override
+    public void askComplete() {
+        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.pomodoro_complete_dialog_title)
+                .setItems(R.array.pomodoro_complete_actions, onCompleteClickListener)
                 .setCancelable(false)
                 .create();
 
@@ -120,6 +131,13 @@ public class TimerFragment extends Fragment implements TimerView {
         }
     };
 
+    private DialogInterface.OnClickListener onCompleteClickListener = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            if (container != null) container.onCompleteActionSelected(i);
+        }
+    };
+
     public interface TimerFragmentContainer {
 
         void onTimerFragmentViewCreated(Bundle savedInstanceState);
@@ -129,5 +147,7 @@ public class TimerFragment extends Fragment implements TimerView {
         void onUnpauseClick();
 
         void onErrorActionSelected(int errorAction);
+
+        void onCompleteActionSelected(int completeAction);
     }
 }

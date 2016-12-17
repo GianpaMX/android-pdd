@@ -12,4 +12,6 @@ public interface TimerView {
     void askStopReasons(String[] stopReasons);
 
     void showErrorDialog();
+
+    void askComplete();
 }

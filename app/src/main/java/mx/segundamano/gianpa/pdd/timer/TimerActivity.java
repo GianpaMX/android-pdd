@@ -105,4 +105,9 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     public void onErrorActionSelected(int errorAction) {
         presenter.stopOnError(errorAction);
     }
+
+    @Override
+    public void onCompleteActionSelected(int completeAction) {
+        presenter.onCompleteActionClick(completeAction);
+    }
 }

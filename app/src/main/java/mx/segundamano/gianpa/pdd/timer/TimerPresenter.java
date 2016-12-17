@@ -48,6 +48,11 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUse
         }
     }
 
+    @Override
+    public void onTimeUp() {
+        if (view != null) view.askComplete();
+    }
+
     public String formatTime(long remainingTimeInMillis) {
         Date date = new Date(remainingTimeInMillis);
         DateFormat formatter = new SimpleDateFormat("mm:ss");
@@ -73,5 +78,12 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUse
 
     public void stopOnError(int errorAction) {
         timerUseCase.stopPomodoroOnError(errorAction);
+    }
+
+    /**
+     * @param completeAction Defined in {@link mx.segundamano.gianpa.pdd.R.array#pomodoro_complete_actions}
+     */
+    public void onCompleteActionClick(int completeAction) {
+        timerUseCase.complete(completeAction == 1);
     }
 }

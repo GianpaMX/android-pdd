@@ -11,11 +11,17 @@
     <string name="notification_time_up_text">Time to take a break</string>
     <string name="stop_reasons_dialog_title">Why did you stop?</string>
     <string name="stop_reasons_dialog_cancel_text">Undo stop</string>
-    <string name="error_resuming_pomodoro_dialog_title">There was an error with this pomodoro. What do you want to do?</string>
+    <string name="pomodoro_resume_dialog_error_title">There was an error with this pomodoro. What do you want to do?</string>
+    <string name="pomodoro_complete_dialog_title">Pomodoro Accomplish?</string>
 
     <string-array name="pomodoro_error_actions">
         <item>Keep it and discard time</item>
         <item>Keep it and count time</item>
         <item>Discard it</item>
+    </string-array>
+
+    <string-array name="pomodoro_complete_actions">
+        <item>Yes, count it</item>
+        <item>No, discard it</item>
     </string-array>
 </resources>

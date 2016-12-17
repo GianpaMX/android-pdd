@@ -1,10 +1,13 @@
 package mx.segundamano.gianpa.pdd.timer;
 
-import mx.segundamano.gianpa.pdd.ticker.Ticker;
+import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
+import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
-public class TimerUseCase implements Ticker.TickListener {
+import static mx.segundamano.gianpa.pdd.timer.TimerUseCase.UserActiveCallback.POMODORO_STATUS_COMPLETE;
+
+public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpListener {
 
     public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
     public static final int ERROR_ACTION_DISCARD = 2;
@@ -15,14 +18,17 @@ public class TimerUseCase implements Ticker.TickListener {
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
     private Ticker ticker;
+    private Alarm alarm;
 
-    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker) {
+    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm) {
         this.pomodoroRepository = pomodoroRepository;
         this.ticker = ticker;
+        this.alarm = alarm;
     }
 
     public void userActive(final UserActiveCallback userActiveCallback) {
         this.userActiveCallback = userActiveCallback;
+        alarm.setActiveTimeUpListener(TimerUseCase.this);
 
         this.pomodoroRepository.findActivePomodoro(new PomodoroRepository.Callback<Pomodoro>() {
             @Override
@@ -39,6 +45,7 @@ public class TimerUseCase implements Ticker.TickListener {
                     return;
                 }
 
+
                 ticker.resume(TimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
@@ -46,11 +53,9 @@ public class TimerUseCase implements Ticker.TickListener {
     }
 
     public void userInactive() {
-        this.userActiveCallback = null;
-
-        if (activePomodoro != null) {
-            ticker.stop();
-        }
+        userActiveCallback = null;
+        alarm.setActiveTimeUpListener(null);
+        ticker.stop();
     }
 
     @Override
@@ -71,6 +76,7 @@ public class TimerUseCase implements Ticker.TickListener {
             @Override
             public void onSuccess(Pomodoro result) {
                 activePomodoro = result;
+                alarm.setWakeUpTime(activePomodoro.endTimeInMillis);
                 ticker.resume(TimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
@@ -90,6 +96,7 @@ public class TimerUseCase implements Ticker.TickListener {
                 ticker.stop();
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.INTERRUPTED);
                 userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+                activePomodoro = null;
             }
         });
     }
@@ -107,6 +114,26 @@ public class TimerUseCase implements Ticker.TickListener {
                 ticker.stop();
                 userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
                 userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+                activePomodoro = null;
+            }
+        });
+    }
+
+    @Override
+    public void onTimeUp() {
+        ticker.stop();
+        userActiveCallback.onTimeUp();
+    }
+
+    public void complete(boolean isComplete) {
+        activePomodoro.status = isComplete ? Pomodoro.COMPLETE : Pomodoro.DISCARDED;
+
+        pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
+            @Override
+            public void onSuccess(Pomodoro result) {
+                userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
+                userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+                activePomodoro = null;
             }
         });
     }
@@ -121,6 +148,8 @@ public class TimerUseCase implements Ticker.TickListener {
         void onTick(long remainingTime);
 
         void onPomodoroStatusChanged(int status);
+
+        void onTimeUp();
     }
 
     public interface StopPomodoroCallback {

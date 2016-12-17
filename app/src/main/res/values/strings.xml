@@ -9,4 +9,10 @@
     <string name="notification_active_pomodoro_ticker">Time until break</string>
     <string name="notification_time_up_title">Time up</string>
     <string name="notification_time_up_text">Time to take a break</string>
+
+    <string-array name="pomodoro_error_actions">
+        <item>Keep it and discard time</item>
+        <item>Keep it and count time</item>
+        <item>Discard it</item>
+    </string-array>
 </resources>

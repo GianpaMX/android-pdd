@@ -99,4 +99,9 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     @Override
     public void onUnpauseClick() {
     }
+
+    @Override
+    public void onErrorActionSelected(int errorAction) {
+        presenter.stopOnError(errorAction);
+    }
 }

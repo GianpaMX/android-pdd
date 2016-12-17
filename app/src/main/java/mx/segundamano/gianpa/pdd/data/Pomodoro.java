@@ -3,6 +3,9 @@ package mx.segundamano.gianpa.pdd.data;
 public class Pomodoro {
     public static final int ACTIVE = 1;
     public static final int INTERRUPTED = 2;
+    public static final int ERROR = 3;
+    public static final int COMPLETE = 4;
+    public static final int DISCARDED = 5;
 
     public Integer id;
     public long startTimeInMillis;

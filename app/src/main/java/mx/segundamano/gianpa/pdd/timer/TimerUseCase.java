@@ -6,6 +6,9 @@ import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 
 public class TimerUseCase implements AlarmGateway.TickListener {
 
+    public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
+    public static final int ERROR_ACTION_DISCARD = 2;
+
     private PomodoroRepository pomodoroRepository;
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
@@ -24,12 +27,18 @@ public class TimerUseCase implements AlarmGateway.TickListener {
             public void onSuccess(Pomodoro result) {
                 activePomodoro = result;
 
-                if (activePomodoro != null) {
-                    alarmGateway.resumeTicker(TimerUseCase.this);
-                    userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
-                } else {
+                if (activePomodoro == null) {
                     userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+                    return;
                 }
+
+                if (activePomodoro.endTimeInMillis < System.currentTimeMillis()) {
+                    userActiveCallback.onPomodoroStatusChanged(Pomodoro.ERROR);
+                    return;
+                }
+
+                alarmGateway.resumeTicker(TimerUseCase.this);
+                userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
         });
     }
@@ -73,13 +82,33 @@ public class TimerUseCase implements AlarmGateway.TickListener {
             public void onSuccess(Pomodoro result) {
                 alarmGateway.stopTicker();
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.INTERRUPTED);
+                userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
+            }
+        });
+    }
+
+    public void stopPomodoroOnError(int errorAction) {
+        activePomodoro.status = Pomodoro.COMPLETE;
+
+        if (errorAction == ERROR_ACTION_DISCARD) activePomodoro.status = Pomodoro.DISCARDED;
+        if (errorAction == ERROR_ACTION_KEEP_AND_DISCARD_TIME) activePomodoro.endTimeInMillis = activePomodoro.startTimeInMillis;
+
+        pomodoroRepository.persist(activePomodoro, new PomodoroRepository.Callback<Pomodoro>() {
+            @Override
+            public void onSuccess(Pomodoro result) {
+                alarmGateway.stopTicker();
+                userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
+                userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
             }
         });
     }
 
     public interface UserActiveCallback {
-        int POMODORO_STATUS_ACTIVE = 1;
-        int POMODORO_STATUS_INTERRUPTED = 2;
+        int POMODORO_STATUS_ACTIVE = Pomodoro.ACTIVE;
+        int POMODORO_STATUS_INTERRUPTED = Pomodoro.INTERRUPTED;
+        int POMODORO_STATUS_ERROR = Pomodoro.ERROR;
+        int POMODORO_STATUS_COMPLETE = Pomodoro.COMPLETE;
+        int POMODORO_STATUS_DISCARDED = Pomodoro.DISCARDED;
 
         void onTick(long remainingTime);
 

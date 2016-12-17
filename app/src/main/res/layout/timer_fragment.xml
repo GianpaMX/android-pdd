@@ -30,6 +30,7 @@
 
         <Button
             android:id="@+id/start_button"
+            style="@style/AppTheme.Button.Red"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="onStartButtonClick"
@@ -39,6 +40,7 @@
 
         <Button
             android:id="@+id/stop_button"
+            style="@style/AppTheme.Button.Red"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:onClick="onStopButtonClick"

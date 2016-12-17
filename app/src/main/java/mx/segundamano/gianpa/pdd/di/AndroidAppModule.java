@@ -54,8 +54,8 @@ public class AndroidAppModule {
 
     @Provides
     @Singleton
-    public NotifyUseCase provideNotifyUseCase(Ticker ticker, NotificationGateway notificationGateway) {
-        return new NotifyUseCase(ticker, notificationGateway);
+    public NotifyUseCase provideNotifyUseCase(NotificationGateway notificationGateway) {
+        return new NotifyUseCase(notificationGateway);
     }
 
     @Provides

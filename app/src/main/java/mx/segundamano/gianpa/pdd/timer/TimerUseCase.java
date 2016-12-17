@@ -3,6 +3,7 @@ package mx.segundamano.gianpa.pdd.timer;
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
+import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
 public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpListener {
@@ -13,20 +14,24 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
     private static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
 
     private PomodoroRepository pomodoroRepository;
-    private UserActiveCallback userActiveCallback;
-    private Pomodoro activePomodoro;
     private Ticker ticker;
     private Alarm alarm;
+    private NotificationGateway notificationGateway;
 
-    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm) {
+    private UserActiveCallback userActiveCallback;
+    private Pomodoro activePomodoro;
+
+    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway) {
         this.pomodoroRepository = pomodoroRepository;
         this.ticker = ticker;
         this.alarm = alarm;
+        this.notificationGateway = notificationGateway;
     }
 
     public void userActive(final UserActiveCallback userActiveCallback) {
         this.userActiveCallback = userActiveCallback;
         alarm.setActiveTimeUpListener(TimerUseCase.this);
+        notificationGateway.hideAllNotifications();
 
         pomodoroRepository.findTimeUpPomodoro(findTimeUpPomodoroCallback);
     }
@@ -72,6 +77,10 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
         userActiveCallback = null;
         alarm.setActiveTimeUpListener(null);
         ticker.stop();
+
+        if (activePomodoro != null) {
+            notificationGateway.showOnGoingNotification(activePomodoro.endTimeInMillis);
+        }
     }
 
     @Override

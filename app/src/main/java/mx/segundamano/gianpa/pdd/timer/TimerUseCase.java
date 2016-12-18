@@ -119,6 +119,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             @Override
             public void onSuccess(Pomodoro result) {
                 ticker.stop();
+                alarm.cancel();
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.INTERRUPTED);
                 userActiveCallback.onTick(TimeConstants.DEFAULT_POMODORO_TIME);
                 activePomodoro = null;

@@ -42,4 +42,9 @@ public class AlarmImpl implements Alarm {
     public ActiveTimeUpListener getActiveTimeUpListener() {
         return activeTimeUpListener;
     }
+
+    @Override
+    public void cancel() {
+        alarmManager.cancel(getPendingIntent());
+    }
 }

@@ -20,8 +20,10 @@
         <item>Discard it</item>
     </string-array>
 
+    <string name="pomodoro_complete_actions_complete">Yes, count it</string>
+    <string name="pomodoro_complete_actions_discard">No, discard it</string>
     <string-array name="pomodoro_complete_actions">
-        <item>Yes, count it</item>
-        <item>No, discard it</item>
+        <item>@string/pomodoro_complete_actions_complete</item>
+        <item>@string/pomodoro_complete_actions_discard</item>
     </string-array>
 </resources>

@@ -85,8 +85,6 @@ public class AndroidAppModule {
     @Singleton
     @Provides
     public Realm provideRealm() {
-        Realm.init(androidApp);
-
         return Realm.getDefaultInstance();
     }
 

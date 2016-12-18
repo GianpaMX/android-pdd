@@ -1,5 +1,7 @@
 package mx.segundamano.gianpa.pdd.data;
 
+import android.support.annotation.NonNull;
+
 import io.realm.Realm;
 import io.realm.RealmResults;
 import io.realm.Sort;
@@ -21,6 +23,12 @@ public class PomodoroRepository {
         callback.onSuccess(results.size() > 0 ? results.first().toEntity() : null);
     }
 
+    /**
+     * Asynchronous
+     *
+     * @param pomodoro
+     * @param callback
+     */
     public void persist(final Pomodoro pomodoro, final Callback<Pomodoro> callback) {
         final PomodoroRealmObject pomodoroRealmObject = new PomodoroRealmObject(pomodoro);
         realm.executeTransactionAsync(new Realm.Transaction() {
@@ -37,18 +45,52 @@ public class PomodoroRepository {
         });
     }
 
+    /**
+     * Synchronous
+     *
+     * @param pomodoro
+     * @return
+     */
+    public Pomodoro persist(Pomodoro pomodoro) {
+        final PomodoroRealmObject pomodoroRealmObject = new PomodoroRealmObject(pomodoro);
+
+        realm.beginTransaction();
+        if (pomodoroRealmObject.id == null) pomodoroRealmObject.id = getNextKey(realm);
+        realm.insertOrUpdate(pomodoroRealmObject);
+        realm.commitTransaction();
+
+        return pomodoroRealmObject.toEntity();
+    }
+
     private Integer getNextKey(Realm realm) {
         Number number = realm.where(PomodoroRealmObject.class).max("id");
         return 1 + (number == null ? 0 : number.intValue());
     }
 
+    /**
+     * Asynchronous
+     * @param callback
+     */
     public void findTimeUpPomodoro(Callback<Pomodoro> callback) {
-        RealmResults<PomodoroRealmObject> results = realm
+        RealmResults<PomodoroRealmObject> results = queryTimeUpPomodoros();
+        callback.onSuccess(results.size() > 0 ? results.first().toEntity() : null);
+    }
+
+    /**
+     * Synchronous
+     * @return
+     */
+    public Pomodoro findTimeUpPomodoro() {
+        RealmResults<PomodoroRealmObject> results = queryTimeUpPomodoros();
+        return results.size() > 0 ? results.first().toEntity() : null;
+    }
+
+    @NonNull
+    public RealmResults<PomodoroRealmObject> queryTimeUpPomodoros() {
+        return realm
                 .where(PomodoroRealmObject.class)
                 .equalTo("status", Pomodoro.TIME_UP)
                 .findAllSorted("startTimeInMillis", Sort.DESCENDING);
-
-        callback.onSuccess(results.size() > 0 ? results.first().toEntity() : null);
     }
 
     public interface Callback<T> {

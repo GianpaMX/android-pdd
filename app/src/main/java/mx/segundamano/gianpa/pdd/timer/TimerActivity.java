@@ -13,6 +13,9 @@ import mx.segundamano.gianpa.pdd.timer.di.TimerActivityModule;
 import mx.segundamano.gianpa.pdd.timer.di.TimerComponent;
 
 public class TimerActivity extends AppCompatActivity implements TimerFragment.TimerFragmentContainer {
+
+    public static final String IS_STOP_INTENT = "IS_STOP_INTENT";
+
     @Inject
     public TimerPresenter presenter;
 
@@ -76,15 +79,25 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     @Override
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
         presenter.setView(timerFragment);
+
+        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
+            presenter.onStopButtonClick();
+        }
     }
 
     @Override
     public void onStopReasonClick(int stopReason) {
         presenter.onStopReasonClick(stopReason);
+        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
+            getIntent().getExtras().remove(IS_STOP_INTENT);
+        }
     }
 
     @Override
     public void onUnpauseClick() {
+        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
+            getIntent().getExtras().remove(IS_STOP_INTENT);
+        }
     }
 
     @Override

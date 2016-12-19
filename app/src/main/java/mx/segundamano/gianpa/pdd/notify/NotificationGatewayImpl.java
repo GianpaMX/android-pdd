@@ -5,7 +5,9 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Icon;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 
@@ -27,7 +29,10 @@ public class NotificationGatewayImpl implements NotificationGateway {
     public void showOnGoingNotification(long when) {
         PendingIntent resultPendingIntent = getTimerPendingIntent();
 
+        PendingIntent stopPendingIntent = getStopPendingIntent();
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Notification.Action stopAction = new Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_stop_24dp), context.getString(R.string.timer_fragment_button_stop_text), stopPendingIntent).build();
             notification = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
@@ -38,6 +43,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
                     .setWhen(when)
                     .setUsesChronometer(true)
                     .setChronometerCountDown(true)
+                    .addAction(stopAction)
                     .build();
         } else {
             notification = new NotificationCompat.Builder(context)
@@ -49,8 +55,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
                     .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
                     .setWhen(when)
                     .setUsesChronometer(true)
+                    .addAction(R.drawable.ic_stop_24dp, context.getString(R.string.timer_fragment_button_stop_text), stopPendingIntent)
                     .build();
-
         }
         notificationManager.notify(1, this.notification);
     }
@@ -72,6 +78,15 @@ public class NotificationGatewayImpl implements NotificationGateway {
         notificationManager.notify(1, notification);
     }
 
+    private PendingIntent getStopPendingIntent() {
+        Intent resultIntent = new Intent(context, TimerActivity.class);
+        resultIntent.putExtra(TimerActivity.IS_STOP_INTENT, true);
+
+        TaskStackBuilder stackBuilder = createTaskBuilder(resultIntent);
+
+        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
     private PendingIntent getCompletePendingIntent(boolean isComplete) {
         Intent completeIntent = CompleteService.newIntent(context, isComplete);
 
@@ -81,11 +96,17 @@ public class NotificationGatewayImpl implements NotificationGateway {
     public PendingIntent getTimerPendingIntent() {
         Intent resultIntent = new Intent(context, TimerActivity.class);
 
+        TaskStackBuilder stackBuilder = createTaskBuilder(resultIntent);
+
+        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+    }
+
+    @NonNull
+    public TaskStackBuilder createTaskBuilder(Intent resultIntent) {
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
         stackBuilder.addParentStack(TimerActivity.class);
         stackBuilder.addNextIntent(resultIntent);
-
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        return stackBuilder;
     }
 
     @Override

@@ -16,13 +16,6 @@ public class WakeupUseCase {
     }
 
     public void timeUp(final Callback callback) {
-        Alarm.ActiveTimeUpListener activeTimeUpListener = alarm.getActiveTimeUpListener();
-        if (activeTimeUpListener != null) {
-            callback.ignore();
-            activeTimeUpListener.onTimeUp();
-            return;
-        }
-
         this.callback = callback;
         pomodoroRepository.findActivePomodoro(onFindActivePomodoro);
     }
@@ -38,6 +31,13 @@ public class WakeupUseCase {
     private PomodoroRepository.Callback<Pomodoro> onPersistActivePomodoro = new PomodoroRepository.Callback<Pomodoro>() {
         @Override
         public void onSuccess(Pomodoro result) {
+            Alarm.ActiveTimeUpListener activeTimeUpListener = alarm.getActiveTimeUpListener();
+            if (activeTimeUpListener != null) {
+                callback.ignore();
+                activeTimeUpListener.onTimeUp();
+                return;
+            }
+
             callback.onTimeUp();
         }
     };

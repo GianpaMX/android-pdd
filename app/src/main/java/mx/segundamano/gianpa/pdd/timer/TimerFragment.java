@@ -22,6 +22,7 @@ public class TimerFragment extends Fragment implements TimerView {
     private Button stopButton;
     private TextView timerTextView;
     private TimerFragmentContainer container;
+    private AlertDialog alertDialog;
 
     public static TimerFragment newInstance() {
         return new TimerFragment();
@@ -80,7 +81,8 @@ public class TimerFragment extends Fragment implements TimerView {
 
     @Override
     public void askStopReasons(String[] stopReasons) {
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+        if (alertDialog != null) alertDialog.dismiss();
+        alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.stop_reasons_dialog_title)
                 .setItems(stopReasons, onStopClickListener)
                 .setNegativeButton(R.string.stop_reasons_dialog_cancel_text, onUnpauseClickListener)
@@ -91,7 +93,8 @@ public class TimerFragment extends Fragment implements TimerView {
 
     @Override
     public void showErrorDialog() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+        if (alertDialog != null) alertDialog.dismiss();
+        alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.pomodoro_resume_dialog_error_title)
                 .setItems(R.array.pomodoro_error_actions, onErrorActionSelectedListener)
                 .setCancelable(false)
@@ -102,7 +105,8 @@ public class TimerFragment extends Fragment implements TimerView {
 
     @Override
     public void askComplete() {
-        AlertDialog alertDialog = new AlertDialog.Builder(getActivity())
+        if (alertDialog != null) alertDialog.dismiss();
+        alertDialog = new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.pomodoro_complete_dialog_title)
                 .setItems(R.array.pomodoro_complete_actions, onCompleteClickListener)
                 .setCancelable(false)
@@ -114,12 +118,14 @@ public class TimerFragment extends Fragment implements TimerView {
     private DialogInterface.OnClickListener onStopClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int stopReason) {
+            alertDialog = null;
             if (container != null) container.onStopReasonClick(stopReason);
         }
     };
     private DialogInterface.OnClickListener onUnpauseClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
+            alertDialog = null;
             if (container != null) container.onUnpauseClick();
         }
     };
@@ -127,6 +133,7 @@ public class TimerFragment extends Fragment implements TimerView {
     private DialogInterface.OnClickListener onErrorActionSelectedListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
+            alertDialog = null;
             if (container != null) container.onErrorActionSelected(i);
         }
     };
@@ -134,6 +141,7 @@ public class TimerFragment extends Fragment implements TimerView {
     private DialogInterface.OnClickListener onCompleteClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
+            alertDialog = null;
             if (container != null) container.onCompleteActionSelected(i);
         }
     };

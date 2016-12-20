@@ -73,6 +73,7 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     }
 
     public void onStopButtonClick(View view) {
+        getIntent().putExtra(IS_STOP_INTENT, true);
         presenter.onStopButtonClick();
     }
 

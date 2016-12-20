@@ -4,6 +4,7 @@ import dagger.Module;
 import dagger.Provides;
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
+import mx.segundamano.gianpa.pdd.data.SettingsRepository;
 import mx.segundamano.gianpa.pdd.di.ActivityScope;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
@@ -28,7 +29,7 @@ public class TimerActivityModule {
 
     @Provides
     @ActivityScope
-    public TimerUseCase provideTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway) {
-        return new TimerUseCase(pomodoroRepository, ticker, alarm, notificationGateway);
+    public TimerUseCase provideTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsRepository settingsRepository) {
+        return new TimerUseCase(pomodoroRepository, ticker, alarm, notificationGateway, settingsRepository);
     }
 }

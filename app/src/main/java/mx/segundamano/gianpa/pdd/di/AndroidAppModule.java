@@ -13,9 +13,11 @@ import mx.segundamano.gianpa.pdd.AndroidApp;
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.alarm.AlarmImpl;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
+import mx.segundamano.gianpa.pdd.data.SettingsRepository;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.notify.NotificationGatewayImpl;
 import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
+import mx.segundamano.gianpa.pdd.settings.SettingsRepositoryimpl;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
 import mx.segundamano.gianpa.pdd.ticker.TickerImpl;
 import mx.segundamano.gianpa.pdd.wakeup.WakeupUseCase;
@@ -88,4 +90,9 @@ public class AndroidAppModule {
         return Realm.getDefaultInstance();
     }
 
+    @Singleton
+    @Provides
+    public SettingsRepository provideSettingsRepository() {
+        return new SettingsRepositoryimpl(androidApp);
+    }
 }

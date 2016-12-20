@@ -12,6 +12,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".timer.TimerActivity"
             android:label="@string/title_activity_timer"
@@ -22,7 +23,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".settings.SettingsActivity"
+            android:parentActivityName=".timer.TimerActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+
         <service android:name=".complete.CompleteService" />
+
         <receiver
             android:name=".wakeup.AlarmReceiver"
             android:enabled="true"

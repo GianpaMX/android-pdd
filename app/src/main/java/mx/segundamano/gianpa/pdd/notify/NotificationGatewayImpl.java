@@ -79,12 +79,11 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     private PendingIntent getStopPendingIntent() {
-        Intent resultIntent = new Intent(context, TimerActivity.class);
-        resultIntent.putExtra(TimerActivity.IS_STOP_INTENT, true);
+        Intent stopTimerActivityIntent = new Intent(context, TimerActivity.class);
+        stopTimerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        stopTimerActivityIntent.putExtra(TimerActivity.IS_STOP_INTENT, true);
 
-        TaskStackBuilder stackBuilder = createTaskBuilder(resultIntent);
-
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        return PendingIntent.getActivity(context, 0, stopTimerActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     private PendingIntent getCompletePendingIntent(boolean isComplete) {
@@ -94,19 +93,10 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     public PendingIntent getTimerPendingIntent() {
-        Intent resultIntent = new Intent(context, TimerActivity.class);
+        Intent  timerActivityIntent= new Intent(context, TimerActivity.class);
+        timerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
-        TaskStackBuilder stackBuilder = createTaskBuilder(resultIntent);
-
-        return stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-    }
-
-    @NonNull
-    public TaskStackBuilder createTaskBuilder(Intent resultIntent) {
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-        stackBuilder.addParentStack(TimerActivity.class);
-        stackBuilder.addNextIntent(resultIntent);
-        return stackBuilder;
+        return PendingIntent.getActivity(context, 0, timerActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }
 
     @Override

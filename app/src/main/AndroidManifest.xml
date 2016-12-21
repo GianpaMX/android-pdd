@@ -16,6 +16,7 @@
         <activity
             android:name=".timer.TimerActivity"
             android:label="@string/title_activity_timer"
+            android:launchMode="singleTask"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

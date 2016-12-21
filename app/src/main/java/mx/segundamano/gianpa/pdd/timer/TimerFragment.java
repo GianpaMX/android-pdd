@@ -156,6 +156,12 @@ public class TimerFragment extends Fragment implements TimerView {
         }
     };
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (alertDialog != null) alertDialog.dismiss();
+    }
+
     public interface TimerFragmentContainer {
 
         void onTimerFragmentViewCreated(Bundle savedInstanceState);

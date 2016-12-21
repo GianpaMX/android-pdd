@@ -27,7 +27,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
     @Override
     public void showOnGoingNotification(long when) {
-        PendingIntent resultPendingIntent = getTimerPendingIntent();
+        PendingIntent timerPendingIntent = getTimerPendingIntent();
 
         PendingIntent stopPendingIntent = getStopPendingIntent();
 
@@ -37,7 +37,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
                     .setContentText(context.getString(R.string.notification_active_pomodoro_text))
-                    .setContentIntent(resultPendingIntent)
+                    .setContentIntent(timerPendingIntent)
                     .setOngoing(true)
                     .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
                     .setWhen(when)
@@ -50,7 +50,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
                     .setSmallIcon(R.mipmap.ic_launcher)
                     .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
                     .setContentText(context.getString(R.string.notification_active_pomodoro_text))
-                    .setContentIntent(resultPendingIntent)
+                    .setContentIntent(timerPendingIntent)
                     .setOngoing(true)
                     .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
                     .setWhen(when)
@@ -63,13 +63,13 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
     @Override
     public void showTimeUpNotification() {
-        PendingIntent resultPendingIntent = getTimerPendingIntent();
+        PendingIntent timerPendingIntent = getTimerPendingIntent();
 
         notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(context.getString(R.string.notification_time_up_title))
                 .setContentText(context.getString(R.string.notification_time_up_text))
-                .setContentIntent(resultPendingIntent)
+                .setContentIntent(timerPendingIntent)
                 .setOngoing(true)
                 .addAction(R.drawable.ic_check_24dp, context.getString(R.string.pomodoro_complete_actions_complete), getCompletePendingIntent(true))
                 .addAction(R.drawable.ic_close_24dp, context.getString(R.string.pomodoro_complete_actions_discard), getCompletePendingIntent(false))
@@ -80,6 +80,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
     private PendingIntent getStopPendingIntent() {
         Intent stopTimerActivityIntent = new Intent(context, TimerActivity.class);
+        stopTimerActivityIntent.setAction(Intent.ACTION_EDIT);
         stopTimerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         stopTimerActivityIntent.putExtra(TimerActivity.IS_STOP_INTENT, true);
 
@@ -94,6 +95,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
     public PendingIntent getTimerPendingIntent() {
         Intent  timerActivityIntent= new Intent(context, TimerActivity.class);
+        timerActivityIntent.setAction(Intent.ACTION_VIEW);
         timerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 
         return PendingIntent.getActivity(context, 0, timerActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);

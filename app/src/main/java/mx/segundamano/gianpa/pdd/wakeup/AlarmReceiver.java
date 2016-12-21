@@ -3,11 +3,11 @@ package mx.segundamano.gianpa.pdd.wakeup;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import javax.inject.Inject;
 
 import mx.segundamano.gianpa.pdd.AndroidApp;
+import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.di.AndroidAppComponent;
 import mx.segundamano.gianpa.pdd.notify.NotifyUseCase;
 
@@ -27,7 +27,7 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
 
         inject(this);
 
-        wakeupUseCase.timeUp(this);
+        wakeupUseCase.timeUp(intent.getStringExtra(Alarm.EXTRA_TAG), this);
     }
 
     private void inject(AlarmReceiver alarmReceiver) {
@@ -43,8 +43,8 @@ public class AlarmReceiver extends BroadcastReceiver implements WakeupUseCase.Ca
     }
 
     @Override
-    public void onTimeUp() {
-        notifyUseCase.timeUp();
+    public void onTimeUp(String tag) {
+        notifyUseCase.timeUp(tag);
         WakeLocker.release();
     }
 

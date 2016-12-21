@@ -1,17 +1,17 @@
-package mx.segundamano.gianpa.pdd.timer;
+package mx.segundamano.gianpa.pdd.pomodorotimer;
 
-public interface TimerView {
+public interface PomodoroTimerView {
     void showStopButton();
 
     void showStartButton();
 
     void onTick(String remainingTime);
 
-    void ringAlarm();
-
     void askStopReasons(String[] stopReasons);
 
     void showErrorDialog();
 
     void askComplete();
+
+    void onCompleted();
 }

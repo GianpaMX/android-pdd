@@ -7,4 +7,11 @@
         android:entryValues="@array/settings_pomodoro_time_list_in_millis"
         android:key="SETTINGS_POMODORO_TIME"
         android:title="@string/settings_pomodoro_time_title" />
+    <ListPreference
+        android:defaultValue="@string/settings_break_time_default_value"
+            android:dialogTitle="@string/settings_break_time_dialog_title"
+        android:entries="@array/settings_break_time_list_texts"
+        android:entryValues="@array/settings_break_time_list_in_millis"
+        android:key="SETTINGS_BREAK_TIME"
+        android:title="@string/settings_break_time_title" />
 </PreferenceScreen>

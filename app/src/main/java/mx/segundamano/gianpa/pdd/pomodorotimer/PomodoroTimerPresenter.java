@@ -1,29 +1,29 @@
-package mx.segundamano.gianpa.pdd.timer;
+package mx.segundamano.gianpa.pdd.pomodorotimer;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUseCase.StopPomodoroCallback {
-    private static final String TAG = TimerPresenter.class.getName();
+public class PomodoroTimerPresenter implements PomodoroTimerUseCase.UserActiveCallback, PomodoroTimerUseCase.StopPomodoroCallback {
+    private static final String TAG = PomodoroTimerPresenter.class.getName();
 
-    private TimerUseCase timerUseCase;
-    private TimerView view;
+    private PomodoroTimerUseCase pomodoroTimerUseCase;
+    private PomodoroTimerView view;
 
-    public TimerPresenter(TimerUseCase timerUseCase) {
-        this.timerUseCase = timerUseCase;
+    public PomodoroTimerPresenter(PomodoroTimerUseCase pomodoroTimerUseCase) {
+        this.pomodoroTimerUseCase = pomodoroTimerUseCase;
     }
 
-    public void setView(TimerView view) {
+    public void setView(PomodoroTimerView view) {
         this.view = view;
     }
 
     public void onActivityResume() {
-        timerUseCase.userActive(this);
+        pomodoroTimerUseCase.userActive(this);
     }
 
     public void onActivityPause() {
-        timerUseCase.userInactive();
+        pomodoroTimerUseCase.userInactive();
     }
 
     @Override
@@ -38,6 +38,7 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUse
                 view.showStopButton();
                 return;
             case POMODORO_STATUS_COMPLETE:
+                view.onCompleted();
             case POMODORO_STATUS_DISCARDED:
             case POMODORO_STATUS_INTERRUPTED:
                 view.showStartButton();
@@ -60,11 +61,11 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUse
     }
 
     public void onStartButtonClick() {
-        timerUseCase.startPomodoro();
+        pomodoroTimerUseCase.startPomodoro();
     }
 
     public void onStopButtonClick() {
-        timerUseCase.stopPomodoro(this);
+        pomodoroTimerUseCase.stopPomodoro(this);
     }
 
     @Override
@@ -73,17 +74,17 @@ public class TimerPresenter implements TimerUseCase.UserActiveCallback, TimerUse
     }
 
     public void onStopReasonClick(int stopReason) {
-        timerUseCase.stopPomodoro(stopReason);
+        pomodoroTimerUseCase.stopPomodoro(stopReason);
     }
 
     public void stopOnError(int errorAction) {
-        timerUseCase.stopPomodoroOnError(errorAction);
+        pomodoroTimerUseCase.stopPomodoroOnError(errorAction);
     }
 
     /**
      * @param completeAction Defined in {@link mx.segundamano.gianpa.pdd.R.array#pomodoro_complete_actions}
      */
     public void onCompleteActionClick(int completeAction) {
-        timerUseCase.complete(completeAction == 1);
+        pomodoroTimerUseCase.complete(completeAction == 0);
     }
 }

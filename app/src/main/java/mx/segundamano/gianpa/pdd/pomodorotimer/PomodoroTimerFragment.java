@@ -1,10 +1,9 @@
-package mx.segundamano.gianpa.pdd.timer;
+package mx.segundamano.gianpa.pdd.pomodorotimer;
 
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import android.widget.ViewSwitcher;
 
 import mx.segundamano.gianpa.pdd.R;
 
-public class TimerFragment extends Fragment implements TimerView {
+public class PomodoroTimerFragment extends Fragment implements PomodoroTimerView {
     private ViewSwitcher buttonSwitcher;
     private Button startButton;
     private Button stopButton;
@@ -24,8 +23,8 @@ public class TimerFragment extends Fragment implements TimerView {
     private TimerFragmentContainer container;
     private AlertDialog alertDialog;
 
-    public static TimerFragment newInstance() {
-        return new TimerFragment();
+    public static PomodoroTimerFragment newInstance() {
+        return new PomodoroTimerFragment();
     }
 
     @Override
@@ -38,7 +37,7 @@ public class TimerFragment extends Fragment implements TimerView {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.timer_fragment, container, false);
+        View view = inflater.inflate(R.layout.pomodoro_timer_fragment, container, false);
 
         timerTextView = (TextView) view.findViewById(R.id.timer_text_view);
         startButton = (Button) view.findViewById(R.id.start_button);
@@ -72,11 +71,6 @@ public class TimerFragment extends Fragment implements TimerView {
     @Override
     public void onTick(String remainingTime) {
         timerTextView.setText(remainingTime);
-    }
-
-    @Override
-    public void ringAlarm() {
-        Snackbar.make(getView(), "Time Up", Snackbar.LENGTH_LONG).show();
     }
 
     @Override
@@ -114,6 +108,11 @@ public class TimerFragment extends Fragment implements TimerView {
                 .create();
 
         alertDialog.show();
+    }
+
+    @Override
+    public void onCompleted() {
+        if (container != null) container.onCompleted();
     }
 
     private DialogInterface.OnClickListener onStopClickListener = new DialogInterface.OnClickListener() {
@@ -173,5 +172,11 @@ public class TimerFragment extends Fragment implements TimerView {
         void onErrorActionSelected(int errorAction);
 
         void onCompleteActionSelected(int completeAction);
+
+        void onCompleted();
+
+        void onStartButtonClick(View view);
+
+        void onStopButtonClick(View view);
     }
 }

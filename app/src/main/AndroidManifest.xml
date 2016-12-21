@@ -14,7 +14,7 @@
         android:theme="@style/AppTheme.NoActionBar">
 
         <activity
-            android:name=".timer.TimerActivity"
+            android:name=".pomodorotimer.PomodoroTimerActivity"
             android:label="@string/title_activity_timer"
             android:launchMode="singleTask">
             <intent-filter>
@@ -25,7 +25,11 @@
         </activity>
         <activity
             android:name=".settings.SettingsActivity"
-            android:parentActivityName=".timer.TimerActivity" />
+            android:parentActivityName=".pomodorotimer.PomodoroTimerActivity" />
+        <activity
+            android:name=".breaktimer.BreakTimerActivity"
+            android:launchMode="singleTask"
+            android:parentActivityName=".pomodorotimer.PomodoroTimerActivity" />
 
         <service android:name=".complete.CompleteService" />
 

@@ -1,39 +1,42 @@
-package mx.segundamano.gianpa.pdd.timer;
+package mx.segundamano.gianpa.pdd.pomodorotimer;
 
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
-import mx.segundamano.gianpa.pdd.data.SettingsRepository;
+import mx.segundamano.gianpa.pdd.data.SettingsGateway;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 import mx.segundamano.gianpa.pdd.ticker.Ticker;
 
-public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpListener {
+public class PomodoroTimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpListener {
+
+    public static final String TAG = PomodoroTimerUseCase.class.getSimpleName();
 
     public static final int ERROR_ACTION_KEEP_AND_DISCARD_TIME = 1;
     public static final int ERROR_ACTION_DISCARD = 2;
 
     private static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
+
     private PomodoroRepository pomodoroRepository;
 
     private Ticker ticker;
     private Alarm alarm;
     private NotificationGateway notificationGateway;
-    private SettingsRepository settingsRepository;
+    private SettingsGateway settingsGateway;
 
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
 
-    public TimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsRepository settingsRepository) {
+    public PomodoroTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsGateway settingsGateway) {
         this.pomodoroRepository = pomodoroRepository;
         this.ticker = ticker;
         this.alarm = alarm;
         this.notificationGateway = notificationGateway;
-        this.settingsRepository = settingsRepository;
+        this.settingsGateway = settingsGateway;
     }
 
     public void userActive(final UserActiveCallback userActiveCallback) {
         this.userActiveCallback = userActiveCallback;
-        alarm.setActiveTimeUpListener(TimerUseCase.this);
+        alarm.setActiveTimeUpListener(PomodoroTimerUseCase.this);
         notificationGateway.hideAllNotifications();
 
         pomodoroRepository.findTimeUpPomodoro(findTimeUpPomodoroCallback);
@@ -61,7 +64,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             activePomodoro = result;
 
             if (activePomodoro == null) {
-                userActiveCallback.onTick(settingsRepository.findPomodoroTime());
+                userActiveCallback.onTick(settingsGateway.readPomodoroTime());
                 return;
             }
 
@@ -71,7 +74,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             }
 
 
-            ticker.resume(TimerUseCase.this);
+            ticker.resume(PomodoroTimerUseCase.this);
             userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
         }
     };
@@ -96,7 +99,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
 
         Pomodoro pomodoro = Pomodoro.Builder()
                 .setStartTimeInMillis(startTimeInMillis)
-                .setEndTimeInMillis(startTimeInMillis + settingsRepository.findPomodoroTime())
+                .setEndTimeInMillis(startTimeInMillis + settingsGateway.readPomodoroTime())
                 .setStatus(Pomodoro.ACTIVE)
                 .build();
 
@@ -104,8 +107,8 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             @Override
             public void onSuccess(Pomodoro result) {
                 activePomodoro = result;
-                alarm.setWakeUpTime(activePomodoro.endTimeInMillis);
-                ticker.resume(TimerUseCase.this);
+                alarm.setWakeUpTime(activePomodoro.endTimeInMillis, TAG);
+                ticker.resume(PomodoroTimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
             }
         });
@@ -122,9 +125,9 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             @Override
             public void onSuccess(Pomodoro result) {
                 ticker.stop();
-                alarm.cancel();
+                alarm.cancel(TAG);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.INTERRUPTED);
-                userActiveCallback.onTick(settingsRepository.findPomodoroTime());
+                userActiveCallback.onTick(settingsGateway.readPomodoroTime());
                 activePomodoro = null;
             }
         });
@@ -142,7 +145,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             public void onSuccess(Pomodoro result) {
                 ticker.stop();
                 userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
-                userActiveCallback.onTick(settingsRepository.findPomodoroTime());
+                userActiveCallback.onTick(settingsGateway.readPomodoroTime());
                 activePomodoro = null;
             }
         });
@@ -161,7 +164,7 @@ public class TimerUseCase implements Ticker.TickListener, Alarm.ActiveTimeUpList
             @Override
             public void onSuccess(Pomodoro result) {
                 userActiveCallback.onPomodoroStatusChanged(activePomodoro.status);
-                userActiveCallback.onTick(settingsRepository.findPomodoroTime());
+                userActiveCallback.onTick(settingsGateway.readPomodoroTime());
                 activePomodoro = null;
             }
         });

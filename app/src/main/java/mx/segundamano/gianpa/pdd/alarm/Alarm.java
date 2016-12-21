@@ -1,13 +1,15 @@
 package mx.segundamano.gianpa.pdd.alarm;
 
 public interface Alarm {
-    void setWakeUpTime(long wakeUpTime);
+    String EXTRA_TAG = "EXTRA_TAG";
+
+    void setWakeUpTime(long wakeUpTime, String tag);
 
     void setActiveTimeUpListener(ActiveTimeUpListener activeTimeUpListener);
 
     ActiveTimeUpListener getActiveTimeUpListener();
 
-    void cancel();
+    void cancel(String tag);
 
     interface ActiveTimeUpListener {
         void onTimeUp();

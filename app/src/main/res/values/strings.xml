@@ -33,6 +33,7 @@
     <string name="settings_pomodoro_time_dialog_title">@string/settings_pomodoro_time_title</string>
     <string name="settings_pomodoro_time_default_value">1500000</string>
     <string-array name="settings_pomodoro_time_list_texts">
+        <item>10 seconds</item>
         <item>10 minutes</item>
         <item>15 minutes</item>
         <item>20 minutes</item>
@@ -45,6 +46,7 @@
         <item>55 minutes</item>
     </string-array>
     <string-array name="settings_pomodoro_time_list_in_millis">
+        <item>10000</item>
         <item>600000</item>
         <item>900000</item>
         <item>1200000</item>
@@ -55,5 +57,55 @@
         <item>2700000</item>
         <item>3000000</item>
         <item>3300000</item>
+    </string-array>
+
+    <string name="settings_break_time_title">Break time</string>
+    <string name="settings_break_time_dialog_title">@string/settings_break_time_title</string>
+    <string name="settings_break_time_default_value">300000</string>
+    <string-array name="settings_break_time_list_texts">
+        <item>5 seconds</item>
+        <item>1 minute</item>
+        <item>2 minutes</item>
+        <item>3 minutes</item>
+        <item>4 minutes</item>
+        <item>5 minutes</item>
+        <item>6 minutes</item>
+        <item>7 minutes</item>
+        <item>8 minutes</item>
+        <item>9 minutes</item>
+        <item>10 minutes</item>
+        <item>11 minutes</item>
+        <item>12 minutes</item>
+        <item>13 minutes</item>
+        <item>14 minutes</item>
+        <item>15 minutes</item>
+        <item>16 minutes</item>
+        <item>17 minutes</item>
+        <item>18 minutes</item>
+        <item>19 minutes</item>
+        <item>20 minutes</item>
+    </string-array>
+    <string-array name="settings_break_time_list_in_millis">
+        <item>5000</item>
+        <item>60000</item>
+        <item>120000</item>
+        <item>180000</item>
+        <item>240000</item>
+        <item>@string/settings_break_time_default_value</item>
+        <item>360000</item>
+        <item>420000</item>
+        <item>480000</item>
+        <item>540000</item>
+        <item>600000</item>
+        <item>660000</item>
+        <item>720000</item>
+        <item>780000</item>
+        <item>840000</item>
+        <item>900000</item>
+        <item>960000</item>
+        <item>1020000</item>
+        <item>1080000</item>
+        <item>1140000</item>
+        <item>1200000</item>
     </string-array>
 </resources>

@@ -8,11 +8,11 @@ import android.content.Intent;
 import mx.segundamano.gianpa.pdd.wakeup.AlarmReceiver;
 
 public class AlarmImpl implements Alarm {
+
     private ActiveTimeUpListener activeTimeUpListener;
 
     private Context context;
     private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
 
     public AlarmImpl(Context context, AlarmManager alarmManager) {
         this.context = context;
@@ -20,20 +20,17 @@ public class AlarmImpl implements Alarm {
     }
 
     @Override
-    public void setWakeUpTime(long wakeUpTime) {
-        alarmManager.cancel(getPendingIntent());
-        alarmManager.setExact(AlarmManager.RTC_WAKEUP, wakeUpTime, getPendingIntent());
+    public void setWakeUpTime(long wakeUpTime, String tag) {
+        alarmManager.cancel(getPendingIntent(tag));
+        alarmManager.setExact(AlarmManager.RTC_WAKEUP, wakeUpTime, getPendingIntent(tag));
     }
 
-    private PendingIntent getPendingIntent() {
-        if (pendingIntent == null) {
-            Intent intent = new Intent(context, AlarmReceiver.class);
-            pendingIntent = PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        }
-
-        return pendingIntent;
+    private PendingIntent getPendingIntent(String tag) {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setType(tag);
+        intent.putExtra(EXTRA_TAG, tag);
+        return PendingIntent.getBroadcast(context, 1, intent, PendingIntent.FLAG_CANCEL_CURRENT);
     }
-
 
     public void setActiveTimeUpListener(ActiveTimeUpListener activeTimeUpListener) {
         this.activeTimeUpListener = activeTimeUpListener;
@@ -44,7 +41,7 @@ public class AlarmImpl implements Alarm {
     }
 
     @Override
-    public void cancel() {
-        alarmManager.cancel(getPendingIntent());
+    public void cancel(String tag) {
+        alarmManager.cancel(getPendingIntent(tag));
     }
 }

@@ -20,11 +20,13 @@ import mx.segundamano.gianpa.pdd.timer.di.TimerComponent;
 public class TimerActivity extends AppCompatActivity implements TimerFragment.TimerFragmentContainer {
 
     public static final String IS_STOP_INTENT = "IS_STOP_INTENT";
+    private static final String STOP_REASON = "STOP_REASON";
 
     @Inject
     public TimerPresenter presenter;
 
     private TimerFragment timerFragment;
+    private Integer stopReason;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,10 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         inject(this);
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(STOP_REASON) && savedInstanceState.get(STOP_REASON) != null) {
+            this.stopReason = savedInstanceState.getInt(STOP_REASON);
+        }
 
         timerFragment = getTimerFragment();
     }
@@ -97,6 +103,7 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
 
     public void onStopButtonClick(View view) {
         getIntent().putExtra(IS_STOP_INTENT, true);
+        this.stopReason = null;
         presenter.onStopButtonClick();
     }
 
@@ -104,7 +111,7 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
         presenter.setView(timerFragment);
 
-        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
+        if (stopReason == null && getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
             presenter.onStopButtonClick();
         }
     }
@@ -112,15 +119,21 @@ public class TimerActivity extends AppCompatActivity implements TimerFragment.Ti
     @Override
     public void onStopReasonClick(int stopReason) {
         presenter.onStopReasonClick(stopReason);
-        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
-            getIntent().getExtras().remove(IS_STOP_INTENT);
-        }
+        this.stopReason = stopReason;
     }
 
     @Override
     public void onUnpauseClick() {
-        if (getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
-            getIntent().getExtras().remove(IS_STOP_INTENT);
+        this.stopReason = -1;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (stopReason != null) {
+            outState.putInt(STOP_REASON, stopReason);
+        } else if (outState.containsKey(STOP_REASON)) {
+            outState.remove(STOP_REASON);
         }
     }
 

@@ -86,6 +86,7 @@ public class TimerFragment extends Fragment implements TimerView {
                 .setTitle(R.string.stop_reasons_dialog_title)
                 .setItems(stopReasons, onStopClickListener)
                 .setNegativeButton(R.string.stop_reasons_dialog_cancel_text, onUnpauseClickListener)
+                .setOnCancelListener(onCancelClickListener)
                 .create();
 
         alertDialog.show();
@@ -122,6 +123,15 @@ public class TimerFragment extends Fragment implements TimerView {
             if (container != null) container.onStopReasonClick(stopReason);
         }
     };
+
+    private DialogInterface.OnCancelListener onCancelClickListener = new DialogInterface.OnCancelListener() {
+        @Override
+        public void onCancel(DialogInterface dialog) {
+            alertDialog = null;
+            if (container != null) container.onUnpauseClick();
+        }
+    };
+
     private DialogInterface.OnClickListener onUnpauseClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {

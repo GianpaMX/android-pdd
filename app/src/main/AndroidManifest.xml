@@ -29,7 +29,8 @@
         <activity
             android:name=".breaktimer.BreakTimerActivity"
             android:launchMode="singleTask"
-            android:parentActivityName=".pomodorotimer.PomodoroTimerActivity" />
+            android:parentActivityName=".pomodorotimer.PomodoroTimerActivity"
+            android:theme="@style/AppTheme.Green.NoActionBar"/>
 
         <service android:name=".complete.CompleteService" />
 

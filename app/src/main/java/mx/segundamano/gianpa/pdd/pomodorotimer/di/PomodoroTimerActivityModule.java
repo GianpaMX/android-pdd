@@ -3,6 +3,7 @@ package mx.segundamano.gianpa.pdd.pomodorotimer.di;
 import dagger.Module;
 import dagger.Provides;
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
+import mx.segundamano.gianpa.pdd.data.BreakTimerRepository;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.data.SettingsGateway;
 import mx.segundamano.gianpa.pdd.di.ActivityScope;
@@ -29,7 +30,13 @@ public class PomodoroTimerActivityModule {
 
     @Provides
     @ActivityScope
-    public PomodoroTimerUseCase providePomodoroTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsGateway settingsGateway) {
-        return new PomodoroTimerUseCase(pomodoroRepository, ticker, alarm, notificationGateway, settingsGateway);
+    public PomodoroTimerUseCase providePomodoroTimerUseCase(PomodoroRepository pomodoroRepository,
+                                                            Ticker ticker,
+                                                            Alarm alarm,
+                                                            NotificationGateway notificationGateway,
+                                                            SettingsGateway settingsGateway,
+                                                            BreakTimerRepository breakTimerRepository) {
+
+        return new PomodoroTimerUseCase(pomodoroRepository, ticker, alarm, notificationGateway, settingsGateway, breakTimerRepository);
     }
 }

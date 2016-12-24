@@ -168,7 +168,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
         Intent breakTimerActivityIntent = new Intent(context, BreakTimerActivity.class);
         breakTimerActivityIntent.setAction(Intent.ACTION_EDIT);
         breakTimerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        breakTimerActivityIntent.putExtra(BreakTimerActivity.IS_STOP_INTENT, true);
+        breakTimerActivityIntent.putExtra(BreakTimerActivity.IS_START_INTENT, true);
 
         TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
         taskStackBuilder.addNextIntentWithParentStack(breakTimerActivityIntent);

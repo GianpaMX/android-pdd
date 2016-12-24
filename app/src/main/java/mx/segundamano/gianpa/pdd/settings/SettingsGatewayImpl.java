@@ -50,7 +50,9 @@ public class SettingsGatewayImpl implements SettingsGateway {
     public void writeBreak(Break aBreak) {
         SharedPreferences.Editor editor = getSharedPreferences().edit();
 
-        editor.putInt(SETTINGS_BREAK_STATUS, Break.INACTIVE);
+        editor.putInt(SETTINGS_BREAK_STATUS, aBreak.status);
+        editor.putLong(SETTINGS_BREAK_START_TIME_IN_MILLIS, aBreak.startTimeInMillis);
+        editor.putLong(SETTINGS_BREAK_END_TIME_IN_MILLIS, aBreak.endTimeInMillis);
 
         editor.commit();
     }

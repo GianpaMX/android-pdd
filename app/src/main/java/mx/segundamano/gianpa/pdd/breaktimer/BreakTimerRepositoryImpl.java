@@ -14,11 +14,7 @@ public class BreakTimerRepositoryImpl implements BreakTimerRepository {
 
     @Override
     public Break findBreak() {
-        Break aBreak = settingsGateway.readBreak();
-
-        if(aBreak.status == Break.INACTIVE) return null;
-
-        return aBreak;
+        return settingsGateway.readBreak();
     }
 
     @Override

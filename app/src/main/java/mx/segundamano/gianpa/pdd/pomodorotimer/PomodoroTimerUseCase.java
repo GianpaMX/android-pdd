@@ -1,6 +1,8 @@
 package mx.segundamano.gianpa.pdd.pomodorotimer;
 
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
+import mx.segundamano.gianpa.pdd.data.Break;
+import mx.segundamano.gianpa.pdd.data.BreakTimerRepository;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.data.SettingsGateway;
@@ -16,27 +18,28 @@ public class PomodoroTimerUseCase implements Ticker.TickListener, Alarm.ActiveTi
 
     private static final String[] STOP_REASONS = {"Boss interrupted", "Colleage interrupted", "Email", "Phone call", "Web browsing"};
 
-    private PomodoroRepository pomodoroRepository;
-
-    private Ticker ticker;
-    private Alarm alarm;
-    private NotificationGateway notificationGateway;
-    private SettingsGateway settingsGateway;
+    private final PomodoroRepository pomodoroRepository;
+    private final Ticker ticker;
+    private final Alarm alarm;
+    private final NotificationGateway notificationGateway;
+    private final SettingsGateway settingsGateway;
+    private final BreakTimerRepository breakTimerRepository;
 
     private UserActiveCallback userActiveCallback;
     private Pomodoro activePomodoro;
 
-    public PomodoroTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsGateway settingsGateway) {
+    public PomodoroTimerUseCase(PomodoroRepository pomodoroRepository, Ticker ticker, Alarm alarm, NotificationGateway notificationGateway, SettingsGateway settingsGateway, BreakTimerRepository breakTimerRepository) {
         this.pomodoroRepository = pomodoroRepository;
         this.ticker = ticker;
         this.alarm = alarm;
         this.notificationGateway = notificationGateway;
         this.settingsGateway = settingsGateway;
+        this.breakTimerRepository = breakTimerRepository;
     }
 
     public void userActive(final UserActiveCallback userActiveCallback) {
         this.userActiveCallback = userActiveCallback;
-        alarm.setActiveTimeUpListener(PomodoroTimerUseCase.this);
+        alarm.setActiveTimeUpListener(this);
         notificationGateway.hideAllNotifications();
 
         pomodoroRepository.findTimeUpPomodoro(findTimeUpPomodoroCallback);
@@ -110,6 +113,10 @@ public class PomodoroTimerUseCase implements Ticker.TickListener, Alarm.ActiveTi
                 alarm.setWakeUpTime(activePomodoro.endTimeInMillis, TAG);
                 ticker.resume(PomodoroTimerUseCase.this);
                 userActiveCallback.onPomodoroStatusChanged(Pomodoro.ACTIVE);
+
+                Break activeBreak = breakTimerRepository.findBreak();
+                activeBreak.status = Break.INACTIVE;
+                breakTimerRepository.persist(activeBreak);
             }
         });
     }

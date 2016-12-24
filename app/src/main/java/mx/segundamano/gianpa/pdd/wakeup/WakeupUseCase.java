@@ -1,6 +1,8 @@
 package mx.segundamano.gianpa.pdd.wakeup;
 
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
+import mx.segundamano.gianpa.pdd.breaktimer.BreakTimerUseCase;
+import mx.segundamano.gianpa.pdd.data.Break;
 import mx.segundamano.gianpa.pdd.data.BreakTimerRepository;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
@@ -26,6 +28,11 @@ public class WakeupUseCase {
 
         if (PomodoroTimerUseCase.TAG.equals(tag)) {
             pomodoroRepository.findActivePomodoro(onFindActivePomodoro);
+        } else if (BreakTimerUseCase.TAG.equals(tag)) {
+            Break activeBreak = breakTimerRepository.findBreak();
+            activeBreak.status = Break.TIME_UP;
+            breakTimerRepository.persist(activeBreak);
+            executeCallback();
         } else {
             callback.onTimeUp(tag);
         }

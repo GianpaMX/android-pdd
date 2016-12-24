@@ -1,8 +1,6 @@
 package mx.segundamano.gianpa.pdd.pomodorotimer;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import mx.segundamano.gianpa.pdd.utils.TimeUtils;
 
 public class PomodoroTimerPresenter implements PomodoroTimerUseCase.UserActiveCallback, PomodoroTimerUseCase.StopPomodoroCallback {
     private static final String TAG = PomodoroTimerPresenter.class.getName();
@@ -28,7 +26,7 @@ public class PomodoroTimerPresenter implements PomodoroTimerUseCase.UserActiveCa
 
     @Override
     public void onTick(long remainingTime) {
-        view.onTick(formatTime(remainingTime));
+        view.onTick(TimeUtils.formatTime(remainingTime));
     }
 
     @Override
@@ -52,12 +50,6 @@ public class PomodoroTimerPresenter implements PomodoroTimerUseCase.UserActiveCa
     @Override
     public void onTimeUp() {
         if (view != null) view.askComplete();
-    }
-
-    public String formatTime(long remainingTimeInMillis) {
-        Date date = new Date(remainingTimeInMillis);
-        DateFormat formatter = new SimpleDateFormat("mm:ss");
-        return formatter.format(date);
     }
 
     public void onStartButtonClick() {

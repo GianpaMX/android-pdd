@@ -33,7 +33,7 @@
     <string name="settings_pomodoro_time_dialog_title">@string/settings_pomodoro_time_title</string>
     <string name="settings_pomodoro_time_default_value">1500000</string>
     <string-array name="settings_pomodoro_time_list_texts">
-        <item>10 seconds</item>
+        <item>5 seconds</item>
         <item>10 minutes</item>
         <item>15 minutes</item>
         <item>20 minutes</item>
@@ -46,7 +46,7 @@
         <item>55 minutes</item>
     </string-array>
     <string-array name="settings_pomodoro_time_list_in_millis">
-        <item>10000</item>
+        <item>5000</item>
         <item>600000</item>
         <item>900000</item>
         <item>1200000</item>

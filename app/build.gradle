@@ -6,7 +6,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.0"
     defaultConfig {
-        applicationId "mx.segundamano.gianpa.pdd"
+        applicationId "io.github.gianpamx.pdd"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1

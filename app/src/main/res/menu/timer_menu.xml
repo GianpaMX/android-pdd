@@ -1,7 +1,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="mx.segundamano.gianpa.pdd.pomodorotimer.PomodoroTimerActivity">
+    tools:context="io.github.gianpamx.pdd.pomodorotimer.PomodoroTimerActivity">
     <item
         android:id="@+id/action_settings"
         android:orderInCategory="100"

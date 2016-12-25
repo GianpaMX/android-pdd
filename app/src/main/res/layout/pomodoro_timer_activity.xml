@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="mx.segundamano.gianpa.pdd.pomodorotimer.PomodoroTimerActivity">
+    tools:context="io.github.gianpamx.pdd.pomodorotimer.PomodoroTimerActivity">
 
     <include layout="@layout/toolbar_layout" />
 

@@ -18,8 +18,10 @@
             android:label="@string/title_activity_timer"
             android:launchMode="singleTask">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action android:name="${stopPomodoro}" />
+                <category android:name="android.intent.category.DEFAULT" />
 
+                <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

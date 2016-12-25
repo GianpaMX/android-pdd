@@ -21,7 +21,6 @@ import mx.segundamano.gianpa.pdd.settings.SettingsActivity;
 public class PomodoroTimerActivity extends AppCompatActivity implements PomodoroTimerFragment.TimerFragmentContainer {
 
     private static final String STOP_REASON = "STOP_REASON";
-    public static final String IS_STOP_INTENT = "IS_STOP_INTENT";
 
     protected PomodoroTimerFragment pomodoroTimerFragment;
 
@@ -52,6 +51,10 @@ public class PomodoroTimerActivity extends AppCompatActivity implements Pomodoro
     protected void onResume() {
         super.onResume();
         presenter.onActivityResume();
+
+        if (stopReason == null && getString(R.string.STOP_POMODORO).equals(getIntent().getAction())) {
+            presenter.onStopButtonClick();
+        }
     }
 
     @Override
@@ -102,11 +105,12 @@ public class PomodoroTimerActivity extends AppCompatActivity implements Pomodoro
     }
 
     public void onStartButtonClick(View view) {
+        this.stopReason = null;
         presenter.onStartButtonClick();
     }
 
     public void onStopButtonClick(View view) {
-        getIntent().putExtra(IS_STOP_INTENT, true);
+        getIntent().setAction(getString(R.string.STOP_POMODORO));
         this.stopReason = null;
         presenter.onStopButtonClick();
     }
@@ -114,10 +118,6 @@ public class PomodoroTimerActivity extends AppCompatActivity implements Pomodoro
     @Override
     public void onTimerFragmentViewCreated(Bundle savedInstanceState) {
         presenter.setView(pomodoroTimerFragment);
-
-        if (stopReason == null && getIntent().getExtras() != null && getIntent().getBooleanExtra(IS_STOP_INTENT, false)) {
-            presenter.onStopButtonClick();
-        }
     }
 
     @Override

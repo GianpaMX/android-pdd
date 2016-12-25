@@ -70,11 +70,11 @@ public class NotificationGatewayImpl implements NotificationGateway {
             Notification.Action stopAction = new Notification.Action.Builder(Icon.createWithResource(context, R.drawable.ic_play_arrow_24dp), context.getString(R.string.timer_fragment_button_start_text), stopPendingIntent).build();
             notification = new Notification.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
-                    .setContentText(context.getString(R.string.notification_active_pomodoro_text))
+                    .setContentTitle(context.getString(R.string.notification_break_title))
+                    .setContentText(context.getString(R.string.notification_break_text))
                     .setContentIntent(timerPendingIntent)
                     .setOngoing(true)
-                    .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
+                    .setTicker(context.getString(R.string.notification_break_ticker))
                     .setWhen(when)
                     .setUsesChronometer(true)
                     .setChronometerCountDown(true)
@@ -83,11 +83,11 @@ public class NotificationGatewayImpl implements NotificationGateway {
         } else {
             notification = new NotificationCompat.Builder(context)
                     .setSmallIcon(R.mipmap.ic_launcher)
-                    .setContentTitle(context.getString(R.string.notification_active_pomodoro_title))
-                    .setContentText(context.getString(R.string.notification_active_pomodoro_text))
+                    .setContentTitle(context.getString(R.string.notification_break_title))
+                    .setContentText(context.getString(R.string.notification_break_text))
                     .setContentIntent(timerPendingIntent)
                     .setOngoing(true)
-                    .setTicker(context.getString(R.string.notification_active_pomodoro_ticker))
+                    .setTicker(context.getString(R.string.notification_break_ticker))
                     .setWhen(when)
                     .setUsesChronometer(true)
                     .addAction(R.drawable.ic_play_arrow_24dp, context.getString(R.string.timer_fragment_button_start_text), stopPendingIntent)
@@ -102,8 +102,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
         notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(context.getString(R.string.notification_time_up_title))
-                .setContentText(context.getString(R.string.notification_time_up_text))
+                .setContentTitle(context.getString(R.string.notification_active_pomodoro_time_up_title))
+                .setContentText(context.getString(R.string.notification_active_pomodoro_time_up_text))
                 .setContentIntent(timerPendingIntent)
                 .setOngoing(true)
                 .addAction(R.drawable.ic_check_24dp, context.getString(R.string.pomodoro_complete_actions_complete), getCompletePendingIntent(true))
@@ -119,8 +119,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
 
         notification = new NotificationCompat.Builder(context)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle(context.getString(R.string.notification_time_up_title))
-                .setContentText(context.getString(R.string.notification_time_up_text))
+                .setContentTitle(context.getString(R.string.notification_break_time_up_title))
+                .setContentText(context.getString(R.string.notification_break_time_up_text))
                 .setContentIntent(timerPendingIntent)
                 .setOngoing(true)
                 .addAction(R.drawable.ic_play_arrow_24dp, context.getString(R.string.timer_fragment_button_start_text), getStartPendingIntent())
@@ -130,10 +130,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     private PendingIntent getStopPendingIntent() {
-        Intent stopTimerActivityIntent = new Intent(context, PomodoroTimerActivity.class);
-        stopTimerActivityIntent.setAction(Intent.ACTION_EDIT);
+        Intent stopTimerActivityIntent = new Intent(context.getString(R.string.STOP_POMODORO));
         stopTimerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        stopTimerActivityIntent.putExtra(PomodoroTimerActivity.IS_STOP_INTENT, true);
 
         return PendingIntent.getActivity(context, 0, stopTimerActivityIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     }

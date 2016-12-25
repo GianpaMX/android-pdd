@@ -5,11 +5,17 @@
     <string name="timer_fragment_button_start_text">Start</string>
     <string name="timer_fragment_button_stop_text">Stop</string>
 
-    <string name="notification_active_pomodoro_title">Active Pomodor</string>
+    <string name="notification_active_pomodoro_title">Active Pomodoro</string>
     <string name="notification_active_pomodoro_text">Time until break</string>
     <string name="notification_active_pomodoro_ticker">Time until break</string>
-    <string name="notification_time_up_title">Time up</string>
-    <string name="notification_time_up_text">Time to take a break</string>
+    <string name="notification_active_pomodoro_time_up_title">Time up</string>
+    <string name="notification_active_pomodoro_time_up_text">Time to take a break</string>
+
+    <string name="notification_break_title">Break time</string>
+    <string name="notification_break_text">Time to start working</string>
+    <string name="notification_break_ticker">Time to start working</string>
+    <string name="notification_break_time_up_title">Time up</string>
+    <string name="notification_break_time_up_text">Time to start working</string>
 
     <string name="stop_reasons_dialog_title">Why did you stop?</string>
     <string name="stop_reasons_dialog_cancel_text">Undo stop</string>

@@ -17,12 +17,15 @@ android {
         def completeAndCount = applicationId + ".intent.action.COMPLETE_AND_COUNT"
         def completeAndDiscard = applicationId + ".intent.action.COMPLETE_AND_DISCARD"
         def completeBreak = applicationId + ".intent.action.COMPLETE_BREAK"
+        def stopPomodoro = applicationId + ".intent.action.STOP_POMODORO"
         resValue "string", "COMPLETE_AND_COUND", completeAndCount
         resValue "string", "COMPLETE_AND_DISCARD", completeAndDiscard
         resValue "string", "COMPLETE_BREAK", completeBreak
+        resValue "string", "STOP_POMODORO", stopPomodoro
         manifestPlaceholders = [completeAndCount  : completeAndCount,
                                 completeAndDiscard: completeAndDiscard,
-                                completeBreak     : completeBreak]
+                                completeBreak     : completeBreak,
+                                stopPomodoro      : stopPomodoro]
     }
     buildTypes {
         release {

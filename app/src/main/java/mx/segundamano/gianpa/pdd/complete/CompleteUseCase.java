@@ -67,7 +67,7 @@ public class CompleteUseCase {
 
     public void completeBreak() {
         Break activeBreak = breakTimerRepository.findBreak();
-        activeBreak.status = Break.INTERRUPTED;
+        activeBreak.status = Break.INACTIVE;
         breakTimerRepository.persist(activeBreak);
         alarm.cancel(BreakTimerUseCase.TAG);
     }

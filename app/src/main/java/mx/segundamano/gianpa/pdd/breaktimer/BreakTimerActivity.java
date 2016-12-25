@@ -94,7 +94,6 @@ public class BreakTimerActivity extends AppCompatActivity implements BreakTimerF
 
     @Override
     public void onCompleted(boolean startPomodoro) {
-        setResult(startPomodoro ? Activity.RESULT_OK : Activity.RESULT_CANCELED);
         finish();
     }
 

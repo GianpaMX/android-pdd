@@ -68,6 +68,11 @@ public class PomodoroTimerUseCase implements Ticker.TickListener, Alarm.ActiveTi
 
             if (activePomodoro == null) {
                 userActiveCallback.onTick(settingsGateway.readPomodoroTime());
+
+                if(breakTimerRepository.findBreak().status == Break.INTERRUPTED) {
+                    startPomodoro();
+                }
+
                 return;
             }
 

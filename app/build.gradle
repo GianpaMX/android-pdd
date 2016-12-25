@@ -12,6 +12,13 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+
+        def completeAndCount = applicationId + ".intent.action.COMPLETE_AND_COUNT"
+        def completeAndDiscard = applicationId + ".intent.action.COMPLETE_AND_DISCARD"
+        resValue "string", "COMPLETE_AND_COUND", completeAndCount
+        resValue "string", "COMPLETE_AND_DISCARD", completeAndDiscard
+        manifestPlaceholders = [completeAndCount: completeAndCount, completeAndDiscard: completeAndDiscard]
     }
     buildTypes {
         release {

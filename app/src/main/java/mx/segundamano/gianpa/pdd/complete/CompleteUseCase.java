@@ -1,6 +1,7 @@
 package mx.segundamano.gianpa.pdd.complete;
 
 import mx.segundamano.gianpa.pdd.alarm.Alarm;
+import mx.segundamano.gianpa.pdd.breaktimer.BreakTimerUseCase;
 import mx.segundamano.gianpa.pdd.data.Break;
 import mx.segundamano.gianpa.pdd.data.BreakTimerRepository;
 import mx.segundamano.gianpa.pdd.data.Pomodoro;
@@ -10,13 +11,11 @@ import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
 
 public class CompleteUseCase {
 
-    private static final String TAG = CompleteUseCase.class.getSimpleName();
-
-    private NotificationGateway notificationGateway;
-    private PomodoroRepository pomodoroRepository;
-    private SettingsGateway settingsGateway;
-    private BreakTimerRepository breakTimerRepository;
-    private Alarm alarm;
+    private final NotificationGateway notificationGateway;
+    private final PomodoroRepository pomodoroRepository;
+    private final SettingsGateway settingsGateway;
+    private final BreakTimerRepository breakTimerRepository;
+    private final Alarm alarm;
 
     public CompleteUseCase(PomodoroRepository pomodoroRepository, NotificationGateway notificationGateway, SettingsGateway settingsGateway, BreakTimerRepository breakTimerRepository, Alarm alarm) {
         this.pomodoroRepository = pomodoroRepository;
@@ -29,7 +28,9 @@ public class CompleteUseCase {
     public void complete(boolean isComplete) {
         completePomodoro(isComplete);
 
-        startBreak();
+        if (isComplete) {
+            startBreak();
+        }
     }
 
     public void startBreak() {
@@ -42,7 +43,7 @@ public class CompleteUseCase {
 
         breakTimerRepository.persist(activeBreak);
 
-        alarm.setWakeUpTime(activeBreak.endTimeInMillis, TAG);
+        alarm.setWakeUpTime(activeBreak.endTimeInMillis, BreakTimerUseCase.TAG);
         alarm.setActiveTimeUpListener(null);
         notificationGateway.showBreakOnGoingNotification(activeBreak.endTimeInMillis);
     }

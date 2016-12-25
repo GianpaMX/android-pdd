@@ -140,7 +140,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     private PendingIntent getCompletePendingIntent(boolean isComplete) {
-        Intent completeIntent = CompleteService.newIntent(context, isComplete);
+        String action = isComplete ? context.getString(R.string.COMPLETE_AND_COUND) : context.getString(R.string.COMPLETE_AND_DISCARD);
+        Intent completeIntent = new Intent(action);
 
         return PendingIntent.getService(context, 0, completeIntent, PendingIntent.FLAG_ONE_SHOT);
     }

@@ -30,9 +30,14 @@
             android:name=".breaktimer.BreakTimerActivity"
             android:launchMode="singleTask"
             android:parentActivityName=".pomodorotimer.PomodoroTimerActivity"
-            android:theme="@style/AppTheme.Green.NoActionBar"/>
+            android:theme="@style/AppTheme.Green.NoActionBar" />
 
-        <service android:name=".complete.CompleteService" />
+        <service android:name=".complete.CompleteService">
+            <intent-filter>
+                <action android:name="${completeAndCount}" />
+                <action android:name="${completeAndDiscard}" />
+            </intent-filter>
+        </service>
 
         <receiver
             android:name=".wakeup.AlarmReceiver"

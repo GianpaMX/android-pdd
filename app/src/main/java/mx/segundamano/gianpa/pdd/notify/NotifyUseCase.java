@@ -1,5 +1,6 @@
 package mx.segundamano.gianpa.pdd.notify;
 
+import mx.segundamano.gianpa.pdd.breaktimer.BreakTimerUseCase;
 import mx.segundamano.gianpa.pdd.pomodorotimer.PomodoroTimerUseCase;
 
 public class NotifyUseCase {
@@ -13,6 +14,8 @@ public class NotifyUseCase {
     public void timeUp(String tag) {
         if (PomodoroTimerUseCase.TAG.equals(tag)) {
             notificationGateway.showPomodoroTimeUpNotification();
+        } else if (BreakTimerUseCase.TAG.equals(tag)) {
+            notificationGateway.showBreakTimeUpNotification();
         }
     }
 }

@@ -36,6 +36,7 @@
             <intent-filter>
                 <action android:name="${completeAndCount}" />
                 <action android:name="${completeAndDiscard}" />
+                <action android:name="${completeBreak}" />
             </intent-filter>
         </service>
 

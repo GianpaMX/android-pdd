@@ -16,9 +16,13 @@ android {
 
         def completeAndCount = applicationId + ".intent.action.COMPLETE_AND_COUNT"
         def completeAndDiscard = applicationId + ".intent.action.COMPLETE_AND_DISCARD"
+        def completeBreak = applicationId + ".intent.action.COMPLETE_BREAK"
         resValue "string", "COMPLETE_AND_COUND", completeAndCount
         resValue "string", "COMPLETE_AND_DISCARD", completeAndDiscard
-        manifestPlaceholders = [completeAndCount: completeAndCount, completeAndDiscard: completeAndDiscard]
+        resValue "string", "COMPLETE_BREAK", completeBreak
+        manifestPlaceholders = [completeAndCount  : completeAndCount,
+                                completeAndDiscard: completeAndDiscard,
+                                completeBreak     : completeBreak]
     }
     buildTypes {
         release {

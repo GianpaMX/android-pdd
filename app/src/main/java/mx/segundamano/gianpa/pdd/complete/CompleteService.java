@@ -29,6 +29,8 @@ public class CompleteService extends IntentService {
             completeUseCase.complete(true);
         } else if (getString(R.string.COMPLETE_AND_DISCARD).equals(intent.getAction())) {
             completeUseCase.complete(false);
+        } else if (getString(R.string.COMPLETE_BREAK).equals(intent.getAction())) {
+            completeUseCase.completeBreakAndStartPomodoro();
         }
     }
 

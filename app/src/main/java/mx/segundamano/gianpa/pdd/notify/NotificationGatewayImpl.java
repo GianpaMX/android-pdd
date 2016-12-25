@@ -12,7 +12,6 @@ import android.support.v4.app.TaskStackBuilder;
 
 import mx.segundamano.gianpa.pdd.R;
 import mx.segundamano.gianpa.pdd.breaktimer.BreakTimerActivity;
-import mx.segundamano.gianpa.pdd.complete.CompleteService;
 import mx.segundamano.gianpa.pdd.pomodorotimer.PomodoroTimerActivity;
 
 public class NotificationGatewayImpl implements NotificationGateway {
@@ -140,9 +139,7 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     private PendingIntent getCompletePendingIntent(boolean isComplete) {
-        String action = isComplete ? context.getString(R.string.COMPLETE_AND_COUND) : context.getString(R.string.COMPLETE_AND_DISCARD);
-        Intent completeIntent = new Intent(action);
-
+        Intent completeIntent = new Intent(isComplete ? context.getString(R.string.COMPLETE_AND_COUND) : context.getString(R.string.COMPLETE_AND_DISCARD));
         return PendingIntent.getService(context, 0, completeIntent, PendingIntent.FLAG_ONE_SHOT);
     }
 
@@ -166,15 +163,8 @@ public class NotificationGatewayImpl implements NotificationGateway {
     }
 
     private PendingIntent getStartPendingIntent() {
-        Intent breakTimerActivityIntent = new Intent(context, BreakTimerActivity.class);
-        breakTimerActivityIntent.setAction(Intent.ACTION_EDIT);
-        breakTimerActivityIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        breakTimerActivityIntent.putExtra(BreakTimerActivity.IS_START_INTENT, true);
-
-        TaskStackBuilder taskStackBuilder = TaskStackBuilder.create(context);
-        taskStackBuilder.addNextIntentWithParentStack(breakTimerActivityIntent);
-
-        return taskStackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
+        Intent completeIntent = new Intent(context.getString(R.string.COMPLETE_BREAK));
+        return PendingIntent.getService(context, 0, completeIntent, PendingIntent.FLAG_ONE_SHOT);
     }
 
 

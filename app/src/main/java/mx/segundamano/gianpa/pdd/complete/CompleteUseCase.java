@@ -8,6 +8,7 @@ import mx.segundamano.gianpa.pdd.data.Pomodoro;
 import mx.segundamano.gianpa.pdd.data.PomodoroRepository;
 import mx.segundamano.gianpa.pdd.data.SettingsGateway;
 import mx.segundamano.gianpa.pdd.notify.NotificationGateway;
+import mx.segundamano.gianpa.pdd.pomodorotimer.PomodoroTimerUseCase;
 
 public class CompleteUseCase {
 
@@ -56,5 +57,33 @@ public class CompleteUseCase {
         }
 
         notificationGateway.hideAllNotifications();
+    }
+
+    public void completeBreakAndStartPomodoro() {
+        completeBreak();
+
+        startPomodoro();
+    }
+
+    public void completeBreak() {
+        Break activeBreak = breakTimerRepository.findBreak();
+        activeBreak.status = Break.INTERRUPTED;
+        breakTimerRepository.persist(activeBreak);
+        alarm.cancel(BreakTimerUseCase.TAG);
+    }
+
+    public void startPomodoro() {
+        long startTimeInMillis = System.currentTimeMillis();
+
+        Pomodoro activePomodoro = Pomodoro.Builder()
+                .setStartTimeInMillis(startTimeInMillis)
+                .setEndTimeInMillis(startTimeInMillis + settingsGateway.readPomodoroTime())
+                .setStatus(Pomodoro.ACTIVE)
+                .build();
+
+        pomodoroRepository.persist(activePomodoro);
+        alarm.setWakeUpTime(activePomodoro.endTimeInMillis, PomodoroTimerUseCase.TAG);
+        alarm.setActiveTimeUpListener(null);
+        notificationGateway.showOnGoingNotification(activePomodoro.endTimeInMillis);
     }
 }

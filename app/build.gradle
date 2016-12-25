@@ -37,13 +37,14 @@ android {
 
 dependencies {
     final DAGGER_VERSION = '2.2'
+    final SUPPORT_LIBRARY_VERSION = '25.0.1'
 
     apt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
     compile "com.google.dagger:dagger:$DAGGER_VERSION"
     testApt "com.google.dagger:dagger-compiler:$DAGGER_VERSION"
 
-    compile 'com.android.support:support-fragment:25.0.1'
-    compile 'com.android.support:appcompat-v7:25.0.1'
-    compile 'com.android.support:preference-v7:25.0.1'
-    compile 'com.android.support:design:25.0.1'
+    compile "com.android.support:support-fragment:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:appcompat-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:preference-v7:$SUPPORT_LIBRARY_VERSION"
+    compile "com.android.support:design:$SUPPORT_LIBRARY_VERSION"
 }
